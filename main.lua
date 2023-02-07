@@ -1,3 +1,5 @@
+local uv = require("uv")
+local os = require("os")
 local json = require('json')
 local fs = require('fs')
 local dia = require('discordia')
@@ -22,9 +24,11 @@ client:on('ready', function()
 end)
 
 client:on("slashCommand", function(ia, cmd, args)
-    print(json.stringify(args))
-    print(json.stringify(cmd))
-    ia:reply("pong! "..args.message, false)
+    local now = uv.now()
+    local msg = ia:reply("pong!", false)
+    
+    now = (uv.now()-now)
+    ia:getReply():update{content = "pong! `"..now.."ms`"}
 end)
 
 
