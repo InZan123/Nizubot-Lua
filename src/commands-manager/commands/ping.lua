@@ -13,15 +13,8 @@ end
 
 command.info = {
     name = "ping",
-    description = "Testing slash commands",
-    type = dia.enums.appCommandType.chatInput,
-    options = {
-        {
-            name = "message",
-            description = "A custom message",
-            type = dia.enums.appCommandOptionType.message,
-        }
-    }
+    description = "Pong!",
+    type = dia.enums.appCommandType.chatInput
 }
 
 return command
