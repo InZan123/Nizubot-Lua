@@ -1,34 +1,19 @@
 local uv = require("uv")
-local os = require("os")
 local json = require('json')
 local fs = require('fs')
 local dia = require('discordia')
 local diacmd = require("discordia-slash")
 local interactions = require("discordia-interactions")
+
+CommandsManager = require("./src/commands-manager")
 local client = dia.Client():useApplicationCommands()
 
 client:on('ready', function()
-	print('Logged in as '.. client.user.username)
-    client:createGuildApplicationCommand("1011643968813006968", {
-        name = "ping",
-        description = "Testing slash commands",
-        type = dia.enums.appCommandType.chatInput,
-        options = {
-            {
-                name = "message",
-                description = "A custom message",
-                type = dia.enums.appCommandOptionType.string,
-            }
-        }
-    })
+    CommandsManager.setupCommands(client)
 end)
 
 client:on("slashCommand", function(ia, cmd, args)
-    local now = uv.now()
-    local msg = ia:reply("pong!", false)
-    
-    now = (uv.now()-now)
-    ia:getReply():update{content = "pong! `"..now.."ms`"}
+    CommandsManager.onSlashCommand(client, ia, cmd, args)
 end)
 
 
