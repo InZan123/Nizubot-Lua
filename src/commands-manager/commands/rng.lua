@@ -28,12 +28,12 @@ command.info = {
         {
             name = "max",
             description = "Biggest possible number.",
-            type = dia.enums.appCommandOptionType.string,
+            type = dia.enums.appCommandOptionType.number,
             options = {
                 {
                     name = "min",
                     description = "Smallest possible number.",
-                    type = dia.enums.appCommandOptionType.string,
+                    type = dia.enums.appCommandOptionType.number,
                     
                 }
             }
