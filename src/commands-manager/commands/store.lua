@@ -16,13 +16,13 @@ end
 
 command.info = {
     name = "store",
-    description = "Store data",
+    description = "Stores data.",
     type = dia.enums.appCommandType.chatInput,
     options = {
         {
             name = "data",
             description = "Data to store.",
-            type = dia.enums.appCommandOptionType.number
+            type = dia.enums.appCommandOptionType.string
         }
     }
 }

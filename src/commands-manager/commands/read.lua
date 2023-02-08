@@ -14,7 +14,7 @@ end
 
 command.info = {
     name = "read",
-    description = "read data",
+    description = "Reads data.",
     type = dia.enums.appCommandType.chatInput
 }
 
