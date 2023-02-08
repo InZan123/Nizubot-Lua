@@ -5,6 +5,7 @@
 *.log
 gateway.json
 token
+/data
 
 # Compiled Lua sources
 luac.out
