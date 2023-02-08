@@ -5,11 +5,13 @@ local json = require"json"
 local command = {}
 
 function command.run(client, ia, cmd, args)
-    print(json.stringify(cmd))
-    print(json.stringify(args))
     args = args or {}
-    local max = args.max or 1
+    local max = args.max or 0
     local min = args.min or 0
+    if max == min then
+        ia:reply("Please make sure the difference between 'min' and 'max' are larger than 0.", true)
+        return
+    end
     if max < min then
         ia:reply("Please make sure 'min' is less than 'max'.", true)
         return
