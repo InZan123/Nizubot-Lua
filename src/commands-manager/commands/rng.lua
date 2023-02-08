@@ -6,8 +6,8 @@ local command = {}
 
 function command.run(client, ia, cmd, args)
     args = args or {}
-    local max = args.max or 0
-    local min = args.min or 0
+    local max = tonumber(args.max) or 0
+    local min = tonumber(args.min) or 0
     if max == min then
         ia:reply("Please make sure the difference between 'min' and 'max' are larger than 0.", true)
         return
