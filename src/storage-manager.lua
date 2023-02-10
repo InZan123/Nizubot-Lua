@@ -91,11 +91,17 @@ function storageManager:saveAllData()
 
         local filePath = self:getFullPath(key)
         local fileDirectory = self:getDirectory(key)
+        print(filePath)
+        print(fileDirectory)
+        local a = nil
         if not fs.existsSync(fileDirectory) then
-            fs.mkdirSync(fileDirectory)
+            print("making")
+            a = fs.mkdirSync(fileDirectory)
+            print(a)
         end
 
         local file = fs.openSync(filePath, "w")
+        print(file)
         fs.writeSync(file, 0, json.stringify(data:read()))
         fs.closeSync(file)
         data.saved = true
