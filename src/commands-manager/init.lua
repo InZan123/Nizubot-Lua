@@ -28,10 +28,15 @@ function manager.setupCommandsForGuild(client, guildId)
 end
 
 function manager.onSlashCommand(client, ia, cmd, args)
-    local command = manager.commands[cmd.name]
-    if command == nil then return end
+    local success, error = pcall(function() 
+        local command = manager.commands[cmd.name]
+        command.run(client, ia, cmd, args)
+    end)
 
-    command.run(client, ia, cmd, args)
+    if not success then
+        print(error)
+        ia:reply("Sorry! An error occured trying to run the command.\n\nHere's the error:\n"..error, true)
+    end
 end
 
 return manager

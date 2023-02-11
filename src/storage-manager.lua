@@ -61,8 +61,6 @@ function storageManager:cloneTemplate(key, defaultData, registered)
 end
 
 function storageManager:getData(key, defaultData)
-    print(self)
-    print(key)
     local dataTable = self.loadedData[key]
     if dataTable ~= nil then
         return dataTable

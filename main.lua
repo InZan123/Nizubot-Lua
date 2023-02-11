@@ -23,6 +23,64 @@ client:on("slashCommand", function(ia, cmd, args)
     CommandsManager.onSlashCommand(client, ia, cmd, args)
 end)
 
+client:on("reactionAdd", function(reaction, userId)
+    ReactionAdd(reaction.message.channel.id, reaction.message.id, reaction.emojiHash, userId, nil)
+end)
+
+client:on("reactionAddUncached", function(channel, messageId, reactionHash, userId)
+    ReactionAdd(channel, messageId, reactionHash, userId, nil)
+end)
+
+client:on("reactionRemove", function(reaction, userId)
+    ReactionRemove(reaction.message.channel.id, reaction.message.id, reaction.emojiHash, userId, nil)
+end)
+
+client:on("reactionRemoveUncached", function(channel, messageId, reactionHash, userId)
+    ReactionRemove(channel, messageId, reactionHash, userId, nil)
+end)
+
+function ReactionAdd(channel, messageId, reactionHash, userId, reaction)
+    local guild = channel.parent
+    local data = _G.storageManager:getData(
+        "servers/"
+        ..guild.id..
+        "/messages/"
+        ..messageId..
+        "/reaction_roles"
+        ,
+        {}
+    )
+    local dataRead = data:read()
+    local roleId = dataRead[reactionHash]
+    if roleId == nil then return end
+
+    local member = guild:getMember(userId)
+    if member == nil then return end
+
+    member:addRole(roleId)
+end
+
+function ReactionRemove(channel, messageId, reactionHash, userId, reaction)
+    local guild = channel.parent
+    local data = _G.storageManager:getData(
+        "servers/"
+        ..guild.id..
+        "/messages/"
+        ..messageId..
+        "/reaction_roles"
+        ,
+        {}
+    )
+    local dataRead = data:read()
+    local roleId = dataRead[reactionHash]
+    if roleId == nil then return end
+
+    local member = guild:getMember(userId)
+    if member == nil then return end
+
+    member:removeRole(roleId)
+end
+
 
 coroutine.wrap(function()
 	while true do
