@@ -24,7 +24,7 @@ client:on("slashCommand", function(ia, cmd, args)
 end)
 
 client:on("reactionAdd", function(reaction, userId)
-    ReactionAdd(reaction.message.channel.id, reaction.message.id, reaction.emojiHash, userId, nil)
+    ReactionAdd(reaction.message.channel, reaction.message.id, reaction.emojiHash, userId, nil)
 end)
 
 client:on("reactionAddUncached", function(channel, messageId, reactionHash, userId)
@@ -32,7 +32,7 @@ client:on("reactionAddUncached", function(channel, messageId, reactionHash, user
 end)
 
 client:on("reactionRemove", function(reaction, userId)
-    ReactionRemove(reaction.message.channel.id, reaction.message.id, reaction.emojiHash, userId, nil)
+    ReactionRemove(reaction.message.channel, reaction.message.id, reaction.emojiHash, userId, nil)
 end)
 
 client:on("reactionRemoveUncached", function(channel, messageId, reactionHash, userId)
@@ -40,7 +40,9 @@ client:on("reactionRemoveUncached", function(channel, messageId, reactionHash, u
 end)
 
 function ReactionAdd(channel, messageId, reactionHash, userId, reaction)
+    print(channel)
     local guild = channel.parent
+    print(guild)
     local data = _G.storageManager:getData(
         "servers/"
         ..guild.id..
