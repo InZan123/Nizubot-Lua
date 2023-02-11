@@ -10,8 +10,20 @@ function manager.setupCommands(client)
 end
 
 function manager.setupCommandsForGuild(client, guildId)
+    print("Updating commands for "..guildId)
     for _, command in pairs(manager.commands) do
-        client:createGuildApplicationCommand(guildId, command.info)
+        local succeeded = false
+        --we will keep trying to create application command when it fails because sometimes it just errors for seemingly no reason.
+        while not succeeded do
+            if pcall(function()
+                print(command.info.name)
+                client:createGuildApplicationCommand(guildId, command.info)
+            end) then
+                succeeded = true
+            else
+                print("Retrying adding command")
+            end
+        end
     end
 end
 
