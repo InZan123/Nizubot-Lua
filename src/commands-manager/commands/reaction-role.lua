@@ -54,6 +54,7 @@ command.info = {
     name = "reactionrole",
     description = "Reaction role.",
     type = dia.enums.appCommandType.chatInput,
+    default_member_permissions = 268435520,
     options = {
         {
             name = "add",
