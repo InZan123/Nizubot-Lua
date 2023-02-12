@@ -12,15 +12,15 @@ CommandsManager = require("./src/commands-manager")
 local client = dia.Client():useApplicationCommands()
 
 client:on('ready', function()
-    CommandsManager.setupCommands(client)
+    CommandsManager:setupCommands(client)
 end)
 
 client:on('guildCreate', function(guild)
-    CommandsManager.setupCommandsForGuild(client, guild.id)
+    CommandsManager:setupCommandsForGuild(client, guild.id)
 end)
 
 client:on("slashCommand", function(ia, cmd, args)
-    CommandsManager.onSlashCommand(client, ia, cmd, args)
+    CommandsManager:onSlashCommand(client, ia, cmd, args)
 end)
 
 client:on("reactionAdd", function(reaction, userId)

@@ -2,16 +2,18 @@ local manager = {}
 
 manager.commands = require("./commands")
 
-function manager.setupCommands(client)
+function manager:setupCommands(client)
     local guilds = client.guilds
     for guildId in pairs(guilds) do
-        manager.setupCommandsForGuild(client, guildId)
+        print("Updating commands for "..guildId)
+        self:setupCommandsForGuild(client, guildId)
     end
 end
 
-function manager.setupCommandsForGuild(client, guildId)
-    print("Updating commands for "..guildId)
-    for _, command in pairs(manager.commands) do
+function manager:setupCommandsForGuild(client, guildId, commands)
+    commands = commands or self.commands
+    for _, command in pairs(commands) do
+
         local succeeded = false
         --we will keep trying to create application command when it fails because sometimes it just errors for seemingly no reason.
         while not succeeded do
@@ -24,12 +26,13 @@ function manager.setupCommandsForGuild(client, guildId)
                 print("Retrying adding command")
             end
         end
+        ::continue::
     end
 end
 
-function manager.onSlashCommand(client, ia, cmd, args)
+function manager:onSlashCommand(client, ia, cmd, args)
     local success, error = pcall(function() 
-        local command = manager.commands[cmd.name]
+        local command = self.commands[cmd.name]
         command.run(client, ia, cmd, args)
     end)
 
