@@ -40,9 +40,7 @@ client:on("reactionRemoveUncached", function(channel, messageId, reactionHash, u
 end)
 
 function ReactionAdd(channel, messageId, reactionHash, userId, reaction)
-    print(channel)
     local guild = channel.parent
-    print(guild)
     local data = _G.storageManager:getData(
         "servers/"
         ..guild.id..
@@ -63,6 +61,7 @@ function ReactionAdd(channel, messageId, reactionHash, userId, reaction)
 end
 
 function ReactionRemove(channel, messageId, reactionHash, userId, reaction)
+
     local guild = channel.parent
     local data = _G.storageManager:getData(
         "servers/"
@@ -74,6 +73,12 @@ function ReactionRemove(channel, messageId, reactionHash, userId, reaction)
         {}
     )
     local dataRead = data:read()
+
+    if userId == client.user.id then
+        dataRead[reactionHash] = nil
+        data:write(dataRead)
+        return
+    end
     local roleId = dataRead[reactionHash]
     if roleId == nil then return end
 
