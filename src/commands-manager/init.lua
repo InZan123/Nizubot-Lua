@@ -1,5 +1,5 @@
 local manager = {}
-
+local json = require"json"
 manager.commands = require("./commands")
 
 function manager:setupCommands(client)
@@ -7,18 +7,28 @@ function manager:setupCommands(client)
     for guildId in pairs(guilds) do
         print("Updating commands for "..guildId)
         self:setupCommandsForGuild(client, guildId)
+        print("Finished updating commands for "..guildId)
     end
 end
 
 function manager:setupCommandsForGuild(client, guildId, commands)
     commands = commands or self.commands
+
+    local oldCommands = client:getGuildApplicationCommands(guildId)
+    for _, command in pairs(oldCommands) do
+        if commands[command.name] == nil then
+            print("Deleting "..command.name)
+            client:deleteGuildApplicationCommand(guildId, command.id)
+        end
+    end
+
     for _, command in pairs(commands) do
 
         local succeeded = false
         --we will keep trying to create application command when it fails because sometimes it just errors for seemingly no reason.
         while not succeeded do
             if pcall(function()
-                print(command.info.name)
+                print("Adding "..command.info.name)
                 client:createGuildApplicationCommand(guildId, command.info)
             end) then
                 succeeded = true
@@ -26,7 +36,6 @@ function manager:setupCommandsForGuild(client, guildId, commands)
                 print("Retrying adding command")
             end
         end
-        ::continue::
     end
 end
 
