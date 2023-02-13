@@ -22,7 +22,8 @@ command.info = {
         {
             name = "data",
             description = "Data to store.",
-            type = dia.enums.appCommandOptionType.string
+            type = dia.enums.appCommandOptionType.string,
+            required = true
         }
     }
 }

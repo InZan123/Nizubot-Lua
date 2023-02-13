@@ -99,17 +99,20 @@ command.info = {
                 {
                     name = "messsage_id",
                     description = "ID of the message.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    required = true
                 },
                 {
                     name = "emoji",
                     description = "The emoji to react to.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    required = true
                 },
                 {
                     name = "role",
                     description = "Role to give.",
-                    type = dia.enums.appCommandOptionType.role
+                    type = dia.enums.appCommandOptionType.role,
+                    required = true
                 }
             }
         },
@@ -121,12 +124,14 @@ command.info = {
                 {
                     name = "messsage_id",
                     description = "ID of the message.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    required = true
                 },
                 {
                     name = "emoji",
                     description = "The emoji to remove.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    required = true
                 }
             }
         }
