@@ -24,6 +24,11 @@ To install Discordia-Interactions you run this command:
 git clone https://github.com/Bilal2453/discordia-interactions.git ./deps/discordia-interactions
 ```
 
+http-codec has an annoying issue which sometimes prevents the bot from starting. The issue was fixed in http-codec 3.0.7. To update it simply delete deps/http-codec.lua an then run this command:
+```
+lit install luvit/http-codec
+```
+
 Once all that is done, create a file called "token" with no extensions and put your bot token in there.
 
 You should now be able to run the bot by running this command:
