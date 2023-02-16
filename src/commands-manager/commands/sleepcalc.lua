@@ -16,7 +16,7 @@ function command.run(client, ia, cmd, args)
         args = args.sleep
     else
         return ia:reply(
-            "The average human takes around 15 minutes to fall asleep. Once you are asleep you will go through sleep cycles. One sleep cycle is about 90 minutes and a good night's sleep consists of 5-6 sleep cycles."
+            "The average human takes around 15 minutes to fall asleep. Once you are asleep you will go through sleep cycles. One sleep cycle is about 90 minutes and a good night's sleep consists of 5-6 sleep cycles. It's best to wake up at the end of a cycle to help you feel more rested and ready to start the day."
             .."\nI will calculate the best time for you to sleep/wake up by using this information."
         )
     end
