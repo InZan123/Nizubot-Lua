@@ -103,11 +103,11 @@ function command.run(client, ia, cmd, args)
         return ia:reply("`"..args.to.."` is not a valid currency. Please do `/currency list` to find valid currencies.", true)
     end
 
-    local fromName = currencyNamesRead.names[args.from]
+    local fromName = currencyNamesRead.names[string.upper(args.from)]
     if fromName then
         fromName = "("..fromName..")"
     end
-    local toName = currencyNamesRead.names[args.to]
+    local toName = currencyNamesRead.names[string.upper(args.to)]
     if toName then
         toName = "("..toName..")"
     end
