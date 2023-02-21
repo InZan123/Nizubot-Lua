@@ -5,6 +5,7 @@ local json = require"json"
 local http = require('coro-http')
 local os = require('os')
 local fs = require('fs')
+local funs = require("src/functions")
 
 local command = {}
 
@@ -15,17 +16,8 @@ if fd == nil then
     return nil
 end
 
-local apiKey = fd and fs.readSync(fd)
+local apiKey = funs.trim(fs.readSync(fd))
 fs.closeSync(fd)
-
-function Round(number)
-    return math.floor(number + 0.5)
-end
-
-function RoundToDecimal(number, decimals)
-    local multiply = 10^decimals
-    return Round(number*multiply)/multiply
-end
 
 function RequestUrl(url)
     local status, connected, res = pcall(function ()
@@ -103,12 +95,12 @@ function command.run(client, ia, cmd, args)
         return ia:reply("`"..args.to.."` is not a valid currency. Please do `/currency list` to find valid currencies.", true)
     end
 
-    local fromName = currencyNamesRead.names[string.upper(args.from)]
-    if fromName then
+    local fromName = currencyNamesRead.names[string.upper(args.from)] or ""
+    if fromName ~= "" then
         fromName = "("..fromName..")"
     end
-    local toName = currencyNamesRead.names[string.upper(args.to)]
-    if toName then
+    local toName = currencyNamesRead.names[string.upper(args.to)] or ""
+    if toName ~= "" then
         toName = "("..toName..")"
     end
 
@@ -126,12 +118,12 @@ function command.run(client, ia, cmd, args)
             fields = {
                 {name = "", value=""},
                 {
-                    name = "From: "..string.upper(args.from).." "..(fromName or ""),
-                    value = tostring(RoundToDecimal(originalAmount,2))
+                    name = funs.trim("From: "..string.upper(args.from).." "..fromName),
+                    value = tostring(funs.roundToDecimal(originalAmount,2))
                 },
                 {
-                    name = "To: "..string.upper(args.to).." "..(toName or ""),
-                    value = tostring(RoundToDecimal(convertedAmount,2))
+                    name = funs.trim("To: "..string.upper(args.to).." "..toName),
+                    value = tostring(funs.roundToDecimal(convertedAmount,2))
                 },
                 {name = "", value=""}
             }

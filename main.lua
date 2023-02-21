@@ -5,6 +5,7 @@ local dia = require('discordia')
 local diacmd = require("discordia-slash")
 local interactions = require("discordia-interactions")
 local timer = require('timer')
+local funs = require("src/functions")
 
 _G.storageManager = require('./src/storage-manager')
 
@@ -100,7 +101,7 @@ fs.open("token", "r", function (err, fd)
     if err then
         return error("Couldn't read token. Make sure you create a file named 'token' which contains the token.\nError message: "..err)
     end
-    local token = fs.readSync(fd)
+    local token = funs.trim(fs.readSync(fd))
     fs.closeSync(fd)
     client:run('Bot '..token)
 end)
