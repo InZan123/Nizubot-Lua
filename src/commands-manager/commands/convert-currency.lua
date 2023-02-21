@@ -126,11 +126,11 @@ function command.run(client, ia, cmd, args)
             fields = {
                 {name = "", value=""},
                 {
-                    name = "From: "..args.from.." "..(fromName or ""),
+                    name = "From: "..string.upper(args.from).." "..(fromName or ""),
                     value = tostring(RoundToDecimal(originalAmount,2))
                 },
                 {
-                    name = "To: "..args.to.." "..(toName or ""),
+                    name = "To: "..string.upper(args.to).." "..(toName or ""),
                     value = tostring(RoundToDecimal(convertedAmount,2))
                 },
                 {name = "", value=""}
