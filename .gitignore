@@ -5,6 +5,7 @@
 *.log
 gateway.json
 token
+openExchangeRatesApiKey
 /data
 
 # Compiled Lua sources
