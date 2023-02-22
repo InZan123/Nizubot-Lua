@@ -128,8 +128,6 @@ function command.run(client, ia, cmd, args)
         }
     }
 
-    print(json.stringify(embed))
-
     ia:reply{embed=embed}
 
 end
