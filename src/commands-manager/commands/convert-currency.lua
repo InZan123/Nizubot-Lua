@@ -107,28 +107,30 @@ function command.run(client, ia, cmd, args)
     local originalAmount = args.amount
     local convertedAmount = originalAmount / fromRate * toRate
 
-    ia:reply{
-        embed={
-            title = "Currency Conversion",
-            description = "Currency rates were taken from https://openexchangerates.org.",
-            footer = {
-                text = "Currency rates last updated"
+    local embed = {
+        title = "Currency Conversion",
+        description = "Currency rates were taken from https://openexchangerates.org.",
+        footer = {
+            text = "Currency rates last updated"
+        },
+        timestamp = os.date("!%Y-%m-%dT%TZ", currencyRatesRead.timestamp),
+        fields = {
+            {name = "", value=""},
+            {
+                name = funs.trim("From: "..string.upper(args.from).." "..fromName),
+                value = tostring(funs.roundToDecimal(originalAmount,2))
             },
-            timestamp = os.date("!%Y-%m-%dT%TZ", currencyRatesRead.timestamp),
-            fields = {
-                {name = "", value=""},
-                {
-                    name = funs.trim("From: "..string.upper(args.from).." "..fromName),
-                    value = tostring(funs.roundToDecimal(originalAmount,2))
-                },
-                {
-                    name = funs.trim("To: "..string.upper(args.to).." "..toName),
-                    value = tostring(funs.roundToDecimal(convertedAmount,2))
-                },
-                {name = "", value=""}
-            }
+            {
+                name = funs.trim("To: "..string.upper(args.to).." "..toName),
+                value = tostring(funs.roundToDecimal(convertedAmount,2))
+            },
+            {name = "", value=""}
         }
     }
+
+    print(json.stringify(embed))
+
+    ia:reply{embed=embed}
 
 end
 
