@@ -110,7 +110,9 @@ function storageManager:saveAllData()
 end
 
 function storageManager:deleteData(key)
-    --todo
+    local successDirectory = os.execute("rm -r "..self.filePath.."/"..key)
+    local successFile = os.execute("rm -r "..self:getFullPath(key))
+    self.loadedData[key] = nil
 end
 
 coroutine.wrap(function()
