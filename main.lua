@@ -4,7 +4,6 @@ local fs = require('fs')
 local dia = require('discordia')
 local diacmd = require("discordia-slash")
 local interactions = require("discordia-interactions")
-local timer = require('timer')
 local funs = require("src/functions")
 
 _G.storageManager = require('./src/storage-manager')
@@ -88,14 +87,6 @@ function ReactionRemove(channel, messageId, reactionHash, userId, reaction)
 
     member:removeRole(roleId)
 end
-
-
-coroutine.wrap(function()
-	while true do
-        _G.storageManager:saveAllData()
-		timer.sleep(1000)
-	end
-end)()
 
 fs.open("token", "r", function (err, fd)
     if err then

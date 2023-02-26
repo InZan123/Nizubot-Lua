@@ -2,6 +2,7 @@ local storageManager = {}
 
 local fs = require('fs')
 local json = require('json')
+local timer = require('timer')
 
 storageManager.filePath = "./data"
 
@@ -111,5 +112,12 @@ end
 function storageManager:deleteData(key)
     --todo
 end
+
+coroutine.wrap(function()
+	while true do
+        storageManager:saveAllData()
+		timer.sleep(1000)
+	end
+end)()
 
 return storageManager
