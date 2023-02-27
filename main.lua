@@ -7,9 +7,12 @@ local interactions = require("discordia-interactions")
 local funs = require("src/functions")
 
 _G.storageManager = require('./src/storage-manager')
+_G.reminder = require('./src/reminder')
 
 CommandsManager = require("./src/commands-manager")
 local client = dia.Client():useApplicationCommands()
+
+_G.reminder:startLoop(client)
 
 client:on('ready', function()
     CommandsManager:setupCommands(client)

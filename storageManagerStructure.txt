@@ -1,0 +1,10 @@
+data/
+    servers/
+        SERVER_ID/
+            serverData
+            messages/
+                MESSAGE_ID/
+                    messageData
+    users/
+        USER_ID/
+            userData

@@ -29,7 +29,10 @@ function manager:setupCommandsForGuild(client, guildId, commands)
         while not succeeded do
             if pcall(function()
                 print("Adding "..command.info.name)
-                client:createGuildApplicationCommand(guildId, command.info)
+                local success, err = client:createGuildApplicationCommand(guildId, command.info)
+                if not success then
+                    print(err)
+                end
             end) then
                 succeeded = true
             else
