@@ -110,9 +110,11 @@ function reminder:listReminders(guildId, channelId, userId)
     local reminders = {}
 
     for i, v in ipairs(guildRemindersRead) do
-        if v.userId == userId then
-            table.insert(reminders, v)
-            guildReminders:write(guildRemindersRead)
+        if v.channelId == channelId then
+            if v.userId == userId then
+                table.insert(reminders, v)
+                guildReminders:write(guildRemindersRead)
+            end
         end
     end
     return reminders
