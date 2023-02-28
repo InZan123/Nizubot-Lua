@@ -130,14 +130,13 @@ function reminder:startLoop(client)
         while true do
             timer.sleep(1000)
 
-            self.waitTime = self.waitTime - 1
+            local currentTime = os.time()
 
-            if self.waitTime > 0 then
+            if self.waitTime > currentTime then
                 goto continue
             end
 
-            local currentTime = os.time()
-            local nextReminderDuration = math.huge
+            local nextReminderTime = math.huge
     
             local remindersData = _G.storageManager:getData("reminders", {})
             local remindersDataRead = remindersData:read()
@@ -173,7 +172,7 @@ function reminder:startLoop(client)
                     end
 
                     if e.finishedTime > currentTime then
-                        nextReminderDuration = math.min(e.finishedTime, nextReminderDuration)
+                        nextReminderTime = math.min(e.finishedTime, nextReminderTime)
                         break --the other elements will have higher finishedTime.
                     end
 
@@ -181,7 +180,7 @@ function reminder:startLoop(client)
                     if guild == nil then
                         e.tries = e.tries + 1
                         print("Cannot access guild. Attempt "..e.tries)
-                        nextReminderDuration = 0
+                        nextReminderTime = 0
                         goto continue
                     end
     
@@ -190,7 +189,7 @@ function reminder:startLoop(client)
                     if channel == nil then
                         e.tries = e.tries + 1
                         print("Cannot access channel. Attempt "..e.tries)
-                        nextReminderDuration = 0
+                        nextReminderTime = 0
                         goto continue
                     end
 
@@ -219,7 +218,7 @@ function reminder:startLoop(client)
 
                         e.requestTime = e.finishedTime + waitTime * missedReminders
                         e.finishedTime = e.requestTime + waitTime
-                        nextReminderDuration = math.min(e.finishedTime, nextReminderDuration)
+                        nextReminderTime = math.min(e.finishedTime, nextReminderTime)
                         table.insert(addReminders, e)
                     else
 
@@ -271,9 +270,9 @@ function reminder:startLoop(client)
                 remindersData:write(remindersDataRead)
             end
 
-            self.waitTime = nextReminderDuration - currentTime
+            self.waitTime = nextReminderTime
 
-            print("Waiting until "..self.waitTime.." seconds")
+            print("Waiting until "..(self.waitTime-currentTime).." seconds")
 
             ::continue::
         end
