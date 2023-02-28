@@ -4,7 +4,7 @@ local timer = require('timer')
 
 reminder.waitTime = 0
 
-function reminder:addReminder(guildId, channelId, userId, duration, message)
+function reminder:addReminder(guildId, channelId, userId, duration, looping, message)
 
     self.waitTime = 0 --Make it 0 so it can recalculate waitTime with new reminder
 
@@ -29,12 +29,14 @@ function reminder:addReminder(guildId, channelId, userId, duration, message)
     local finishedTime = currentTime + duration
 
     local remindElement = {
+        orginTime = currentTime,
         requestTime = currentTime,
         finishedTime = finishedTime,
         channelId = channelId,
         userId = userId,
         message = message,
-        tries = 0
+        tries = 0,
+        looping = looping
     }
 
     local guildRemindersRead = guildReminders:read()
@@ -159,6 +161,8 @@ function reminder:startLoop(client)
                 local guild = client:getGuild(guildId)
     
                 local removeIndexes = {}
+    
+                local addReminders = {}
                 
                 for i, e in ipairs(guildRemindersRead) do
 
@@ -197,16 +201,39 @@ function reminder:startLoop(client)
                     else
                         messageEnding = "."
                     end
-    
+
                     local timeDifference = currentTime - e.finishedTime
 
-                    if timeDifference < 60 then
-                        channel:send("<@!"..e.userId..">! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding)
+                    if e.looping then
+
+                        local waitTime = e.finishedTime - e.requestTime
+                        local missedReminders = math.floor((currentTime-e.requestTime) / waitTime)-1
+
+                        if missedReminders > 0 then
+                            channel:send("Sorry <@!"..e.userId..">, I forgot to remind you "..missedReminders.." times! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
+                        elseif timeDifference > 60 then
+                            channel:send("Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
+                        else
+                            channel:send("<@!"..e.userId..">! <t:"..e.orginTime..":R> you told me to reminding you"..messageEnding)
+                        end
+
+                        e.requestTime = e.finishedTime + waitTime * missedReminders
+                        e.finishedTime = e.requestTime + waitTime
+                        nextReminderDuration = math.min(e.finishedTime, nextReminderDuration)
+                        table.insert(addReminders, e)
                     else
-                        channel:send("Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding)
+
+                        if timeDifference > 60 then
+                            channel:send("Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding)
+                        else
+                            channel:send("<@!"..e.userId..">! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding)    
+                        end
+                    end
+                    
+                    
+                    if e.looping then
                     end
 
-                    
                     table.insert(removeIndexes, 1, i)
     
                     ::continue::
@@ -215,6 +242,21 @@ function reminder:startLoop(client)
                 for i, v in ipairs(removeIndexes) do
                     table.remove(guildRemindersRead, v)
                 end
+
+                local success = false
+                for _, remindElement in ipairs(addReminders) do
+                    for i, e in ipairs(guildRemindersRead) do --insert it in a way so that finishedTime is still sorted.
+                        if e.finishedTime > remindElement.finishedTime then
+                            table.insert(guildRemindersRead, i, remindElement)
+                            success = true
+                            break
+                        end
+                    end
+                    if not success then
+                        table.insert(guildRemindersRead, remindElement)
+                    end
+                end
+                
                 if next(removeIndexes) then
                     guildReminders:write(guildRemindersRead)
                 end

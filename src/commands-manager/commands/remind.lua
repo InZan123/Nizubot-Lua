@@ -24,9 +24,19 @@ function command.run(client, ia, cmd, args)
             return ia:reply("Please give me a valid duration.", true)
         end
 
-        _G.reminder:addReminder(ia.guildId, ia.channelId, ia.user.id, parsedDuration, args.message)
+        if args.loop then
+            if parsedDuration < 1800 then
+                return ia:reply("When making a loop reminder, please make the duration 30 minutes or longer.", true)
+            end
+        end
 
-        ia:reply("Sure! I will now remind you <t:"..os.time() + parsedDuration..":R>"..messageEnding)
+        _G.reminder:addReminder(ia.guildId, ia.channelId, ia.user.id, parsedDuration, args.loop, args.message)
+
+        if args.loop then
+            ia:reply("Sure! I will now keep reminding you <t:"..os.time() + parsedDuration..":R>"..messageEnding)
+        else
+            ia:reply("Sure! I will now remind you <t:"..os.time() + parsedDuration..":R>"..messageEnding)
+        end
     elseif args.remove then
         args = args.remove
 
@@ -48,7 +58,7 @@ function command.run(client, ia, cmd, args)
 
             ia:reply("Successfully removed reminder"..messageEnding)
         else
-            ia:reply("Failed to remove reminder. Are you using a valid index?")
+            ia:reply("Failed to remove reminder. Are you using a valid index?", true)
         end
     else
         local reminders = _G.reminder:listReminders(ia.guildId, ia.channelId, ia.user.id)
@@ -62,8 +72,12 @@ function command.run(client, ia, cmd, args)
         }
 
         for i, v in ipairs(reminders) do
+            local ending = ""
+            if v.looping then
+                ending = " (Looped)"
+            end
             table.insert(embed.fields, {
-                name = i..": <t:"..v.finishedTime..":R>",
+                name = i..": <t:"..v.finishedTime..":R>"..ending,
                 value = v.message
             })
         end
@@ -91,6 +105,11 @@ command.info = {
                     name = "message",
                     description = "Message of the reminder.",
                     type = dia.enums.appCommandOptionType.string
+                },
+                {
+                    name = "loop",
+                    description = "Should I put this reminder on a loop?",
+                    type = dia.enums.appCommandOptionType.boolean
                 }
             }
         },
