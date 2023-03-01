@@ -213,7 +213,7 @@ function reminder:startLoop(client)
                         elseif timeDifference > 60 then
                             channel:send("Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
                         else
-                            channel:send("<@!"..e.userId..">! <t:"..e.orginTime..":R> you told me to reminding you"..messageEnding)
+                            channel:send("<@!"..e.userId..">! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
                         end
 
                         e.requestTime = e.finishedTime + waitTime * missedReminders
