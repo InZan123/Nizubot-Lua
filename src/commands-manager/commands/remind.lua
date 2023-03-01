@@ -24,6 +24,10 @@ function command.run(client, ia, cmd, args)
             return ia:reply("Please give me a valid duration.", true)
         end
 
+        if parsedDuration < 0 then
+            return ia:reply("Duration cannot be negative.", true)
+        end
+
         if args.loop then
             if parsedDuration < 1800 then
                 return ia:reply("When making a loop reminder, please make the duration 30 minutes or longer.", true)
