@@ -1,0 +1,92 @@
+local dia = require('discordia')
+
+local command = {}
+
+function command.run(client, ia, cmd, args)
+    if args.user then
+        
+        args = args.user
+        if not args.user then
+            args.user = ia.user
+        end
+        local embed = {
+            title = args.user.name.."'s avatar",
+            image = {
+                url = args.user.avatarURL.."?size=4096"
+            }
+        }
+        ia:reply{embed=embed}
+    elseif args.emoji then
+        args = args.emoji
+        print(args.emoji)
+        local emojiId = args.emoji
+        if emojiId:sub(1, 2) == "<:" and emojiId:sub(-1) == ">" then
+            emojiId = emojiId:sub(3):sub(1, -2)
+        end
+        for str in string.gmatch(emojiId, "([^:]+)") do
+            emojiId = str --this will get the last element which is the ID (emojiName:ID)
+        end
+
+        local emoji = ia.guild:getEmoji(emojiId)
+        if not emoji then
+            return ia:reply("Please provide a custom emoji.", false)
+        end
+
+        local embed = {
+            title = emoji.name.."'s icon",
+            image = {
+                url = emoji.url.."?size=4096"
+            }
+        }
+
+        ia:reply{embed=embed}
+    else
+        local embed = {
+            title = ia.guild.name.."'s icon",
+            image = {
+                url = ia.guild.iconURL.."?size=4096"
+            }
+        }
+        ia:reply{embed=embed}
+    end
+end
+
+command.info = {
+    name = "icon",
+    description = "Get the icon of whatever you want.",
+    type = dia.enums.appCommandType.chatInput,
+    options = {
+        {
+            type = dia.enums.appCommandOptionType.subCommand,
+            name = "user",
+            description = "Get the profile picture of a certain user.",
+            options = {
+                {
+                    type = dia.enums.appCommandOptionType.user,
+                    name = "user",
+                    description = "The user to get the profile picture from."
+                }
+            }
+        },
+        {
+            type = dia.enums.appCommandOptionType.subCommand,
+            name = "server",
+            description = "Get the icon of the server.",
+        },
+        {
+            type = dia.enums.appCommandOptionType.subCommand,
+            name = "emoji",
+            description = "Get the icon of a custom emoji.",
+            options = {
+                {
+                    type = dia.enums.appCommandOptionType.string,
+                    name = "emoji",
+                    description = "The custom emoji to get the icon from.",
+                    required = true
+                }
+            }
+        }
+    }
+}
+
+return command
