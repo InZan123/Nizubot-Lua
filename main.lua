@@ -19,7 +19,7 @@ client:on('ready', function()
 end)
 
 client:on('guildCreate', function(guild)
-    CommandsManager:setupCommandsForGuild(client, guild.id)
+    --CommandsManager:setupCommandsForGuild(client, guild.id)
 end)
 
 client:on("slashCommand", function(ia, cmd, args)

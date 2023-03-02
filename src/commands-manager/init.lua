@@ -3,22 +3,12 @@ local json = require"json"
 manager.commands = require("./commands")
 
 function manager:setupCommands(client)
-    local guilds = client.guilds
-    for guildId in pairs(guilds) do
-        print("Updating commands for "..guildId)
-        self:setupCommandsForGuild(client, guildId)
-        print("Finished updating commands for "..guildId)
-    end
-end
-
-function manager:setupCommandsForGuild(client, guildId, commands)
-    commands = commands or self.commands
-
-    local oldCommands = client:getGuildApplicationCommands(guildId)
+    local commands = self.commands
+    local oldCommands = client:getGlobalApplicationCommands()
     for _, command in pairs(oldCommands) do
         if commands[command.name] == nil then
             print("Deleting "..command.name)
-            client:deleteGuildApplicationCommand(guildId, command.id)
+            client:deleteGlobalApplicationCommand(command.id)
         end
     end
 
@@ -29,7 +19,7 @@ function manager:setupCommandsForGuild(client, guildId, commands)
         while not succeeded do
             if pcall(function()
                 print("Adding "..command.info.name)
-                local success, err = client:createGuildApplicationCommand(guildId, command.info)
+                local success, err = client:createGlobalApplicationCommand(command.info)
                 if not success then
                     print(err)
                 end

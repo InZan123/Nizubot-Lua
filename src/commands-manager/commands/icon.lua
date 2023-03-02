@@ -6,6 +6,8 @@ function command.run(client, ia, cmd, args)
     if args.user then
         
         args = args.user
+
+        print(args.user)
         if not args.user then
             args.user = ia.user
         end
