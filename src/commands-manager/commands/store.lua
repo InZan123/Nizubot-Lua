@@ -8,7 +8,7 @@ function command.run(client, ia, cmd, args)
 
     local data = _G.storageManager:getData("storing")
 
-    data:write(args.data or data:read())
+    data:write(args.data)
 
     ia:reply("Data stored!", false)
     

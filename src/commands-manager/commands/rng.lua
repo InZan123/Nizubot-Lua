@@ -8,13 +8,17 @@ function command.run(client, ia, cmd, args)
     args = args or {}
     local max = tonumber(args.max) or 0
     local min = tonumber(args.min) or 0
-    if max == min then
-        ia:reply("Please make sure the difference between 'min' and 'max' are larger than 0.", true)
-        return
-    end
-    if max < min then
-        ia:reply("Please make sure 'min' is less than 'max'.", true)
-        return
+    if (args.max or args.min) then
+        if max == min then
+            ia:reply("Please make sure the difference between 'min' and 'max' are larger than 0.", true)
+            return
+        end
+        if max < min then
+            ia:reply("Please make sure 'min' is less than 'max'.", true)
+            return
+        end
+    else
+        max = 100
     end
     ia:reply(math.random(min, max), false)
     
@@ -28,27 +32,12 @@ command.info = {
         {
             name = "max",
             description = "Biggest possible number.",
-            type = dia.enums.appCommandOptionType.number,
-            options = {
-                {
-                    name = "min",
-                    description = "Smallest possible number.",
-                    type = dia.enums.appCommandOptionType.number,
-                    
-                }
-            }
+            type = dia.enums.appCommandOptionType.number
         },
         {
             name = "min",
             description = "Smallest possible number.",
-            type = dia.enums.appCommandOptionType.string,
-            options = {
-                {
-                    name = "max",
-                    description = "Biggest possible number.",
-                    type = dia.enums.appCommandOptionType.string,
-                }
-            }
+            type = dia.enums.appCommandOptionType.number
             
         }
     }
