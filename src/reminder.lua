@@ -6,23 +6,41 @@ reminder.waitTime = 0
 
 function reminder:addReminder(guildId, channelId, userId, duration, looping, message)
 
-    self.waitTime = 0 --Make it 0 so it can recalculate waitTime with new reminder
-
     local remindersData = _G.storageManager:getData("reminders", {})
     local remindersDataRead = remindersData:read()
 
-    if not remindersDataRead[guildId] then
-        remindersDataRead[guildId] = true
-        remindersData:write(remindersDataRead)
-    end
+    local reminders
 
-    local guildReminders = _G.storageManager:getData(
-        "servers/"
-        ..guildId..
-        "/reminders"
-        ,
-        {}
-    )
+    if guildId ~= nil then
+        if not remindersDataRead[guildId] then
+            remindersDataRead[guildId] = {
+                dms = false
+            }
+            remindersData:write(remindersDataRead)
+        end
+
+        reminders = _G.storageManager:getData(
+            "servers/"
+            ..guildId..
+            "/reminders"
+            ,
+            {}
+        )
+    else
+        if not remindersDataRead[userId] then
+            remindersDataRead[userId] = {
+                dms = true
+            }
+            remindersData:write(remindersDataRead)
+        end
+        reminders = _G.storageManager:getData(
+            "users/"
+            ..userId..
+            "/reminders"
+            ,
+            {}
+        )
+    end
     
     local currentTime = os.time()
 
@@ -39,21 +57,23 @@ function reminder:addReminder(guildId, channelId, userId, duration, looping, mes
         looping = looping
     }
 
-    local guildRemindersRead = guildReminders:read()
+    local remindersRead = reminders:read()
     local success = false
 
-    for i, e in ipairs(guildRemindersRead) do --insert it in a way so that finishedTime is still sorted.
+    for i, e in ipairs(remindersRead) do --insert it in a way so that finishedTime is still sorted.
         if e.finishedTime > finishedTime then
-            table.insert(guildRemindersRead, i, remindElement)
+            table.insert(remindersRead, i, remindElement)
             success = true
             break
         end
     end
     if not success then
-        table.insert(guildRemindersRead, remindElement)
+        table.insert(remindersRead, remindElement)
     end
 
-    guildReminders:write(guildRemindersRead)
+    reminders:write(remindersRead)
+
+    self.waitTime = math.min(self.waitTime, finishedTime)
 end
 
 function reminder:removeReminder(guildId, channelId, userId, index)
@@ -61,28 +81,43 @@ function reminder:removeReminder(guildId, channelId, userId, index)
     local remindersData = _G.storageManager:getData("reminders", {})
     local remindersDataRead = remindersData:read()
 
-    if not remindersDataRead[guildId] then
+    local reminderData = remindersDataRead[guildId] or remindersDataRead[userId]
+
+    if not reminderData then
         return false
     end
 
-    local guildReminders = _G.storageManager:getData(
-        "servers/"
-        ..guildId..
-        "/reminders"
-        ,
-        {}
-    )
-    local guildRemindersRead = guildReminders:read()
+    local reminders
+
+    if reminderData.dms then
+        reminders = _G.storageManager:getData(
+            "users/"
+            ..userId..
+            "/reminders"
+            ,
+            {}
+        )
+    else
+        reminders = _G.storageManager:getData(
+            "servers/"
+            ..guildId..
+            "/reminders"
+            ,
+            {}
+        )
+    end
+    
+    local remindersRead = reminders:read()
 
     local userMatches = 0
 
-    for i, v in ipairs(guildRemindersRead) do
-        if v.channelId == channelId then
+    for i, v in ipairs(remindersRead) do
+        if v.channelId == channelId then --if in dms these will be nil anyways
             if v.userId == userId then
                 userMatches = userMatches + 1
                 if userMatches == index then
-                    table.remove(guildRemindersRead, i)
-                    guildReminders:write(guildRemindersRead)
+                    table.remove(remindersRead, i)
+                    reminders:write(remindersRead)
                     return true, v
                 end
             end
@@ -96,30 +131,44 @@ function reminder:listReminders(guildId, channelId, userId)
     local remindersData = _G.storageManager:getData("reminders", {})
     local remindersDataRead = remindersData:read()
 
-    if not remindersDataRead[guildId] then
+    local reminderData = remindersDataRead[guildId] or remindersDataRead[userId]
+
+    if not reminderData then
         return {}
     end
 
-    local guildReminders = _G.storageManager:getData(
-        "servers/"
-        ..guildId..
-        "/reminders"
-        ,
-        {}
-    )
-    local guildRemindersRead = guildReminders:read()
+    local reminders
 
-    local reminders = {}
+    if reminderData.dms then
+        reminders = _G.storageManager:getData(
+            "users/"
+            ..userId..
+            "/reminders"
+            ,
+            {}
+        )
+    else
+        reminders = _G.storageManager:getData(
+            "servers/"
+            ..guildId..
+            "/reminders"
+            ,
+            {}
+        )
+    end
 
-    for i, v in ipairs(guildRemindersRead) do
+    local remindersRead = reminders:read()
+
+    local remindersTable = {}
+
+    for i, v in ipairs(remindersRead) do
         if v.channelId == channelId then
             if v.userId == userId then
-                table.insert(reminders, v)
-                guildReminders:write(guildRemindersRead)
+                table.insert(remindersTable, v)
             end
         end
     end
-    return reminders
+    return remindersTable
 end
 
 function reminder:startLoop(client)
@@ -143,27 +192,46 @@ function reminder:startLoop(client)
     
             local removeGuilds = {}
     
-            for guildId, _ in pairs(remindersDataRead) do
-                local guildReminders = _G.storageManager:getData(
-                    "servers/"
-                    ..guildId..
-                    "/reminders"
-                )
+            for id, v in pairs(remindersDataRead) do
+                local reminders
+
+                if v.dms then
+                    reminders = _G.storageManager:getData(
+                        "users/"
+                        ..id..
+                        "/reminders"
+                        ,
+                        {}
+                    )
+                else
+                    reminders = _G.storageManager:getData(
+                        "servers/"
+                        ..id..
+                        "/reminders"
+                        ,
+                        {}
+                    )
+                end
     
-                local guildRemindersRead = guildReminders:read()
+                local remindersRead = reminders:read()
                 
-                if guildRemindersRead == nil or not next(guildRemindersRead) then
-                    table.insert(removeGuilds, guildId)
+                if remindersRead == nil or not next(remindersRead) then
+                    table.insert(removeGuilds, id)
                     goto continue
                 end
     
-                local guild = client:getGuild(guildId)
+                local guild
+                if v.dms then
+                    guild = client:getUser(id)
+                else
+                    guild = client:getGuild(id)
+                end
     
                 local removeIndexes = {}
     
                 local addReminders = {}
                 
-                for i, e in ipairs(guildRemindersRead) do
+                for i, e in ipairs(remindersRead) do
 
                     if e.tries > 10 then
                         print("Removing reminder. Too many attempts.")
@@ -183,8 +251,13 @@ function reminder:startLoop(client)
                         nextReminderTime = 0
                         goto continue
                     end
-    
-                    local channel = guild:getChannel(e.channelId)
+                    
+                    local channel
+                    if v.dms then
+                        channel = guild:getPrivateChannel()
+                    else
+                        channel = guild:getChannel(e.channelId)
+                    end
     
                     if channel == nil then
                         e.tries = e.tries + 1
@@ -239,25 +312,25 @@ function reminder:startLoop(client)
                 end
     
                 for i, v in ipairs(removeIndexes) do
-                    table.remove(guildRemindersRead, v)
+                    table.remove(remindersRead, v)
                 end
 
                 local success = false
                 for _, remindElement in ipairs(addReminders) do
-                    for i, e in ipairs(guildRemindersRead) do --insert it in a way so that finishedTime is still sorted.
+                    for i, e in ipairs(remindersRead) do --insert it in a way so that finishedTime is still sorted.
                         if e.finishedTime > remindElement.finishedTime then
-                            table.insert(guildRemindersRead, i, remindElement)
+                            table.insert(remindersRead, i, remindElement)
                             success = true
                             break
                         end
                     end
                     if not success then
-                        table.insert(guildRemindersRead, remindElement)
+                        table.insert(remindersRead, remindElement)
                     end
                 end
                 
                 if next(removeIndexes) then
-                    guildReminders:write(guildRemindersRead)
+                    reminders:write(remindersRead)
                 end
     
                 ::continue::
