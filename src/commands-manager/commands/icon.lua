@@ -7,7 +7,14 @@ function command.run(client, ia, cmd, args)
         
         args = args.user
 
-        print(args.user)
+        if not args.user.avatarURL or not args.user.name then
+            local key, value = next(args.user)
+            args.user = client:getUser(key)
+            if not args.user then
+                return ia:reply("Sorry, I couldn't find the user you were looking for.", true)
+            end
+        end
+
         if not args.user then
             args.user = ia.user
         end
