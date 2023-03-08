@@ -10,7 +10,9 @@ _G.storageManager = require('./src/storage-manager')
 _G.reminder = require('./src/reminder')
 
 CommandsManager = require("./src/commands-manager")
-local client = dia.Client():useApplicationCommands()
+local client = dia.Client{
+    gatewayIntents = 3243775
+}:useApplicationCommands()
 
 _G.reminder:startLoop(client)
 
