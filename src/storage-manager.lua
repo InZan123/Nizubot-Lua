@@ -3,6 +3,7 @@ local storageManager = {}
 local fs = require('fs')
 local json = require('json')
 local timer = require('timer')
+local funs = require("src/functions")
 
 storageManager.filePath = "./data"
 
@@ -91,13 +92,7 @@ function storageManager:saveAllData()
         local filePath = self:getFullPath(key)
         local fileDirectory = self:getDirectory(key)
         if not fs.existsSync(fileDirectory) then
-            local success = os.execute("mkdir -p "..fileDirectory)
-            if not success then
-                --if it didnt work its prob on windows and we will run a command that should work
-                os.execute("powershell mkdir "..fileDirectory)
-            end
-
-            --fs.mkdirSync(fileDirectory) We use os.execute because fs.mkdirSync breaks when making many directories like test/test1/test2 and so on
+            funs.createDirRecursive(fileDirectory)
         end
 
         local file = fs.openSync(filePath, "w")

@@ -69,4 +69,12 @@ function funs.parseDuration(durationString)
     return totalDuration
 end
 
+function funs.createDirRecursive(dir)
+    local success = os.execute("mkdir -p "..dir)
+    if not success then
+        --if it didnt work its prob on windows and we will run a command that should work
+        os.execute("powershell mkdir "..dir)
+    end
+end
+
 return funs
