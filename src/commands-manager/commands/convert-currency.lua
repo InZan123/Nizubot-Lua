@@ -118,11 +118,11 @@ function command.run(client, ia, cmd, args)
             {name = "", value=""},
             {
                 name = funs.trim("From: "..string.upper(args.from).." "..fromName),
-                value = tostring(funs.roundToDecimal(originalAmount,2))
+                value = tostring(funs.fancyRound(originalAmount,2))
             },
             {
                 name = funs.trim("To: "..string.upper(args.to).." "..toName),
-                value = tostring(funs.roundToDecimal(convertedAmount,2))
+                value = tostring(funs.fancyRound(convertedAmount,2))
             },
             {name = "", value=""}
         }
