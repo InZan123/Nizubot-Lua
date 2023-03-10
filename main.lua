@@ -8,15 +8,16 @@ local funs = require("src/functions")
 
 _G.storageManager = require('./src/storage-manager')
 _G.reminder = require('./src/reminder')
+_G.cotd = require("./src/cotd")
 
 CommandsManager = require("./src/commands-manager")
 local client = dia.Client{
     gatewayIntents = 3243775
 }:useApplicationCommands()
 
-_G.reminder:startLoop(client)
-
 client:on('ready', function()
+    _G.reminder:startLoop(client)
+    _G.cotd:startLoop(client)
     CommandsManager:setupCommands(client)
 end)
 

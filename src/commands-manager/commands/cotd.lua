@@ -1,37 +1,30 @@
 local dia = require('discordia')
 local os = require("os")
-local fs = require("fs")
-local json = require("json")
 
 local command = {}
-
-local fd = fs.openSync("colors.json", "r")
-local colors = json.parse(fs.readSync(fd, 524288))
-fs.closeSync(fd)
 
 function command.run(client, ia, cmd, args)
 
     args = args or {}
 
-    local currentDay = math.floor(os.time()/86400)
+    local currentDay = _G.cotd.getCurrentDay()
 
     local workingDay = currentDay
     
     local title = "Color of the day"
 
+    local currentColor
+
     if args.day then
-        if args.day > currentDay then
+        currentColor = _G.cotd.getDayColor(args.day)
+        if currentColor == nil then
             return ia:reply("We have not reached that day yet.", true)
         end
         workingDay = args.day
         title = "Color of day "..workingDay
+    else
+        currentColor = _G.cotd.getCurrentColor()
     end
-
-    math.randomseed(workingDay)
-    local color = math.random(1,#colors)
-    math.randomseed(os.time())
-
-    local currentColor = colors[color]
 
     local embed = {
         title = title,
@@ -57,7 +50,7 @@ command.info = {
         {
             name = "day",
             description = "The day you wanna get the color of.",
-            type = dia.enums.appCommandOptionType.number
+            type = dia.enums.appCommandOptionType.integer
         }
     }
 }
