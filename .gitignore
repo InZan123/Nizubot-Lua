@@ -6,6 +6,7 @@
 gateway.json
 token
 openExchangeRatesApiKey
+libreTranslateUrl
 /data
 
 # Compiled Lua sources
