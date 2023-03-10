@@ -128,7 +128,14 @@ function command.run(client, ia, cmd, args)
         }
     }
 
-    ia:reply{embed=embed}
+    print(json.stringify(embed))
+
+    local success, err = ia:reply{embed=embed}
+
+    if not success then
+        print(err)
+        ia:reply(err + "\n" + json.stringify(embed), true)
+    end
 
 end
 
