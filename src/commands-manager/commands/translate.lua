@@ -25,13 +25,13 @@ function GetLanguages()
         local res, body = http.request("GET", url)
         print(type(body))
         if res.code ~= 200 then
-            return false, "Failed to connect to LibreTranslate.\n\n"+body
+            return false, "Failed to connect to LibreTranslate.\n\n"..body
         end
         return true, body
     end)
 
     if not status then
-        return false, "Failed to connect to LibreTranslate.\n\n"+res
+        return false, "Failed to connect to LibreTranslate.\n\n"..res
     end
 
     return connected, res
@@ -79,7 +79,7 @@ function Translate(text, source, target)
     local res, body = http.request("POST", url, headers, body)
     
     if res.code ~= 200 then
-        return false, "Failed to connect to LibreTranslate.\n\n"+body
+        return false, "Failed to connect to LibreTranslate.\n\n"..body
     end
     
     local result = json.parse(body)
