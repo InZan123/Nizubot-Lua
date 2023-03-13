@@ -20,6 +20,8 @@ function command.run(client, ia, cmd, args)
         end
     end
 
+    ia:replyDeferred()
+
     local userId = args.user.id
 
     local lastPfpFetchData = _G.storageManager:getData(
