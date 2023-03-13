@@ -16,7 +16,10 @@ function echo.run(client, ia, cmd, args)
             return ia:reply("Please send accurate JSON embed data.", true)
         end
     end
-    ia:reply(args, false)
+    local success, err = ia:reply(args, false)
+    if not success then
+        ia:reply("Failed to send message.\n\nHere's the error:\n"..err, true)
+    end
 end
 
 function cleanecho.run(client, ia, cmd, args)
@@ -33,8 +36,12 @@ function cleanecho.run(client, ia, cmd, args)
                 return ia:reply("Please send accurate JSON embed data.", true)
             end
         end
-        ia.channel:send(args)
-        ia:reply("I've sent the message.", true)
+        local success, err = ia.channel:send(args)
+        if success then
+            ia:reply("I've sent the message.", true)
+        else
+            ia:reply("Failed to send message.\n\nHere's the error:\n"..err, true)
+        end
     elseif args.edit then
         args = args.edit
         
@@ -54,8 +61,12 @@ function cleanecho.run(client, ia, cmd, args)
                 return ia:reply("Please send accurate JSON embed data.", true)
             end
         end
-        message:update(args)
-        ia:reply("I've edited the message.", true)
+        local success, err = message:update(args)
+        if success then
+            ia:reply("I've edited the message.", true)
+        else
+            ia:reply("Failed to edit message.\n\nHere's the error:\n"..err, true)
+        end
     end
 end
 
