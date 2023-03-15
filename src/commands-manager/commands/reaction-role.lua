@@ -1,6 +1,7 @@
 local dia = require('discordia')
 local uv = require('uv')
 local json = require"json"
+local funs = require("src/functions")
 
 local command = {}
 
@@ -21,7 +22,7 @@ function command.run(client, ia, cmd, args)
             emojiId = emojiId:sub(3):sub(1, -2)
         end
 
-        local success = message:addReaction(emojiId)
+        local success, err = message:addReaction(emojiId)
 
         if success then
             
@@ -43,7 +44,7 @@ function command.run(client, ia, cmd, args)
 
             return ia:reply("Sucessfully added reaction role!\nTo remove the reaction role, simply remove my reaction or run `/reactionrole remove`.", true)
         else
-            return ia:reply("Something happened while trying to react to message.", true)
+            return ia:reply("Something happened while trying to react to message.\n\nHere's the error:\n"..err, true)
         end
     elseif args.remove ~= nil then
         
