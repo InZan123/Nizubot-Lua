@@ -110,7 +110,7 @@ function SpinSpinner(ia)
         }
     }
 
-    local currentMsg = "[insert niko spinning fidget spinner here] You are now spinning your spinner..."
+    local currentMsg = "߷ You are now spinning your spinner..."
     ia:reply(currentMsg)
     local msg = ia:getReply()
     local startTime = os.time()
