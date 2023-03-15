@@ -31,7 +31,7 @@ function GetLanguages()
     end)
 
     if not status then
-        return false, "Failed to connect to LibreTranslate.\n\n"..res
+        return false, "Failed to connect to LibreTranslate.\n\nNo response."
     end
 
     return connected, res
