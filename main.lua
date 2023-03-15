@@ -35,7 +35,8 @@ end)
 
 client:on("reactionAddUncached", function(channel, messageId, reactionHash, userId)
     local emoji = client:getEmoji(reactionHash)
-    ReactionAdd(channel, messageId, emoji.hash, userId)
+    reactionHash = (emoji and emoji.hash) or reactionHash
+    ReactionAdd(channel, messageId, reactionHash, userId)
 end)
 
 client:on("reactionRemove", function(reaction, userId)
@@ -44,7 +45,8 @@ end)
 
 client:on("reactionRemoveUncached", function(channel, messageId, reactionHash, userId)
     local emoji = client:getEmoji(reactionHash)
-    ReactionRemove(channel, messageId, emoji.hash, userId, nil)
+    reactionHash = (emoji and emoji.hash) or reactionHash
+    ReactionRemove(channel, messageId, reactionHash, userId, nil)
 end)
 
 function ReactionAdd(channel, messageId, reactionHash, userId)
