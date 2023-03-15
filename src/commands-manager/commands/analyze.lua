@@ -9,21 +9,29 @@ function command.run(client, ia, cmd, args)
 
         local message = ia.channel:getMessage(args.message_id)
 
-        local replyMessage = ""
+        local information = ""
 
         if message.content ~= "" then
-            replyMessage=replyMessage.."content:\n```"..message.content.."```\n\n"
+            information = information.."Message Content:\n\n"..message.content.."\n\n"
         end
 
         if message.embeds then
-            replyMessage=replyMessage.."embeds:\n```"..json.stringify(message.embeds).."```\n\n"
+            information = information.."Message Embeds:\n\n"..json.stringify(message.embeds).."\n\n"
         end
 
         if message.attachments then
-            replyMessage=replyMessage.."attachments:\n```"..json.stringify(message.attachments).."```\n\n"
+            information = information.."Message Attachments:\n\n"..json.stringify(message.attachments).."\n\n"
         end
 
-        ia:reply(replyMessage,true)
+        ia:reply(
+            {
+                file={
+                    "info.txt",
+                    information
+                }
+            },
+            true
+        )
     end
 end
 
