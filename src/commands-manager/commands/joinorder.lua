@@ -27,7 +27,6 @@ function command.run(client, ia, cmd, args)
             if tries > 20 then --if it takes too long to update we give up
                 return ia:reply("Please try again.\n\nGuild has "..guild.totalMemberCount.." members but I only found "..#guild.members..".", true)
             elseif #guild.members >= guild.totalMemberCount then
-                guild.totalMemberCount = #guild.members
                 args.user = args.user or {}
                 return SendSortedList(ia, args.user.id or ia.user.id, args.index)
             end
