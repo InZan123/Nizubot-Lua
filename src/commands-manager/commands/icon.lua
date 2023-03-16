@@ -36,7 +36,7 @@ function command.run(client, ia, cmd, args)
             emojiId = str --this will get the last element which is the ID (emojiName:ID)
         end
 
-        local emoji = ia.guild:getEmoji(emojiId)
+        local emoji = client:getEmoji(emojiId)
         if not emoji then
             return ia:reply("Please provide a custom emoji.", false)
         end
