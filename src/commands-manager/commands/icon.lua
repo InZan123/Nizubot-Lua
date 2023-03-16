@@ -50,12 +50,22 @@ function command.run(client, ia, cmd, args)
 
         ia:reply{embed=embed}
     else
-        local embed = {
-            title = ia.guild.name.."'s icon",
-            image = {
-                url = ia.guild.iconURL.."?size=4096"
+        local embed
+        if ia.channel.type == dia.enums.channelType.private then
+            embed = {
+                title = client.user.name.."'s avatar",
+                image = {
+                    url = client.user.avatarURL.."?size=4096"
+                }
             }
-        }
+        else
+            embed = {
+                title = ia.guild.name.."'s icon",
+                image = {
+                    url = ia.guild.iconURL.."?size=4096"
+                }
+            }
+        end
         ia:reply{embed=embed}
     end
 end
