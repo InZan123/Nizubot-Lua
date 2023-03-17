@@ -50,7 +50,7 @@ function command.run(client, ia, cmd, args)
                 .."\nresponse: "..v.response
             })
         end
-        ia:reply{embed=embed}
+        ia:reply({embed=embed}, true)
     end
 end
 
@@ -59,6 +59,7 @@ print(dia.enums.appCommandOptionType.subCommand)
 command.info = {
     name = "detectmessage",
     description = "Events for when bot detects a message.",
+    default_member_permissions = 0,
     type = dia.enums.appCommandType.chatInput,
     options = {
         {
