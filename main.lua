@@ -9,6 +9,7 @@ local funs = require("src/functions")
 _G.storageManager = require('./src/storage-manager')
 _G.reminder = require('./src/reminder')
 _G.cotd = require("./src/cotd")
+_G.detector = require("./src/detector")
 
 CommandsManager = require("./src/commands-manager")
 local client = dia.Client{
@@ -18,6 +19,7 @@ local client = dia.Client{
 client:on('ready', function()
     _G.reminder:startLoop(client)
     _G.cotd:startLoop(client)
+    _G.detector:start(client)
     CommandsManager:setupCommands(client)
 end)
 
