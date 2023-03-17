@@ -7,6 +7,10 @@ function command.run(client, ia, cmd, args)
         
         args = args.user
 
+        if not args.user then
+            args.user = ia.user
+        end
+
         if not args.user.avatarURL or not args.user.name then
             local key, value = next(args.user)
             args.user = client:getUser(key)
@@ -15,9 +19,6 @@ function command.run(client, ia, cmd, args)
             end
         end
 
-        if not args.user then
-            args.user = ia.user
-        end
         local embed = {
             title = args.user.name.."'s avatar",
             image = {
