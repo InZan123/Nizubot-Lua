@@ -17,6 +17,12 @@ function command.run(client, ia, cmd, args)
         return ia:reply("Please do not use the 'user' and 'index' options at the same time.", true)
     end
 
+    args.user = args.user or {}
+
+    if ia.channel.type == dia.enums.channelType.private then
+        return SendSortedList(client, ia, args.user.id or ia.user.id, args.index, true)
+    end
+
     coroutine.wrap(function() --basically what this mess is, if members arent cached, cache them. Then call SendSortedList
 		if #guild.members ~= guild.totalMemberCount then
             guild:requestMembers()
@@ -27,8 +33,7 @@ function command.run(client, ia, cmd, args)
             if tries > 20 then --if it takes too long to update we give up
                 return ia:reply("Please try again.\n\nGuild has "..guild.totalMemberCount.." members but I only found "..#guild.members..".", true)
             elseif #guild.members >= guild.totalMemberCount then
-                args.user = args.user or {}
-                return SendSortedList(ia, args.user.id or ia.user.id, args.index)
+                return SendSortedList(client, ia, args.user.id or ia.user.id, args.index, false)
             end
             timer.sleep(100)
         end
@@ -40,54 +45,78 @@ function GetJoinTime(userId, members)
     return math.floor(dia.Date.fromISO(members:get(userId).joinedAt):toSeconds())
 end
 
-function SendSortedList(ia, targetUserId, targetIndex)
-    local guild = ia.guild
-    local sortedList = _G.storageManager:getData("servers/"..guild.id.."/sortedUsers", {})
-    local sortedListRead = sortedList:read()
+function SendSortedList(client, ia, targetUserId, targetIndex, dms)
+    local minIndex
+    local maxIndex
+    local finalSortedList
 
-    --Removes users that no longer exists from the sortedUsers and add users that dont exist in the sortedUsers
-
-    local hash = {}
-
-    local i = 1
-    while i <= #sortedListRead do
-        local k = sortedListRead[i]
-        if guild.members:get(k) then
-            i = i + 1
-            hash[k] = true
-        else
-            table.remove(sortedListRead, i)
-        end
-    end
-    local sortAmount = #sortedListRead/#guild.members
-    for k, v in pairs(guild.members) do
-        if not hash[k] then
-            table.insert(sortedListRead, k)
-        end
-    end
-
-    --sorting time!
     local comparisons
     local sortingMethod
 
-    if sortAmount > 0.9 then -- if more than 90% is probably sorted, use insertion sort
-        comparisons, hash = InsertionSortMembers(sortedListRead, guild.members)
-        sortingMethod = "Insertion"
+    if not dms then
+
+        local guild = ia.guild
+        local sortedList = _G.storageManager:getData("servers/"..guild.id.."/sortedUsers", {})
+        finalSortedList = sortedList:read()
+
+        --Removes users that no longer exists from the sortedUsers and add users that dont exist in the sortedUsers
+
+        local hash = {}
+
+        local i = 1
+        while i <= #finalSortedList do
+            local k = finalSortedList[i]
+            if guild.members:get(k) then
+                i = i + 1
+                hash[k] = true
+            else
+                table.remove(finalSortedList, i)
+            end
+        end
+        local sortAmount = #finalSortedList/#guild.members
+        for k, v in pairs(guild.members) do
+            if not hash[k] then
+                table.insert(finalSortedList, k)
+            end
+        end
+
+        --sorting time!
+        if sortAmount > 0.9 then -- if more than 90% is probably sorted, use insertion sort
+            comparisons, hash = InsertionSortMembers(finalSortedList, guild.members)
+            sortingMethod = "Insertion"
+        else
+            comparisons, hash = QuickSortMembers(finalSortedList, guild.members)
+            sortingMethod = "Quick"
+        end
+
+        sortedList:write(finalSortedList)
+
+        targetIndex = targetIndex or hash[targetUserId]
+
+        maxIndex = targetIndex+4
+        minIndex = targetIndex-4
+        local maxOvershoot = math.max(maxIndex-#finalSortedList,0)
+        local minUndershoot = -math.min(minIndex-1,0)
+        maxIndex = math.min(maxIndex+minUndershoot, #finalSortedList)
+        minIndex = math.max(minIndex-maxOvershoot, 1)
     else
-        comparisons, hash = QuickSortMembers(sortedListRead, guild.members)
-        sortingMethod = "Quick"
+        comparisons = 1
+        sortingMethod = "Insertion"
+        minIndex = 1
+        maxIndex = 2
+        if ia.user.createdAt < client.user.createdAt then
+            finalSortedList = {
+                ia.user.id,
+                client.user.id
+            }
+        else
+            finalSortedList = {
+                client.user.id,
+                ia.user.id
+            }
+        end
+        
     end
-
-    sortedList:write(sortedListRead)
-
-    targetIndex = targetIndex or hash[targetUserId]
-
-    local maxIndex = targetIndex+4
-    local minIndex = targetIndex-4
-    local maxOvershoot = math.max(maxIndex-#sortedListRead,0)
-    local minUndershoot = -math.min(minIndex-1,0)
-    maxIndex = math.min(maxIndex+minUndershoot, #sortedListRead)
-    minIndex = math.max(minIndex-maxOvershoot, 1)
 
     local description = ""
 
@@ -100,10 +129,10 @@ function SendSortedList(ia, targetUserId, targetIndex)
 
     --generate description
     for i = minIndex, maxIndex do
-        description = description.."**"..i..".** <@!"..sortedListRead[i]..">"
-        if sortedListRead[i] == ia.user.id then
+        description = description.."**"..i..".** <@!"..finalSortedList[i]..">"
+        if finalSortedList[i] == ia.user.id then
             description = description.." *(you)*\n"
-        elseif targetIndex == i or targetUserId == sortedListRead[i] then
+        elseif targetIndex == i or targetUserId == finalSortedList[i] then
             description = description.." *(target)*\n"
         else
             description = description.."\n"
