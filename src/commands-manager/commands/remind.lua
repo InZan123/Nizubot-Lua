@@ -34,7 +34,11 @@ function command.run(client, ia, cmd, args)
             end
         end
 
-        _G.reminder:addReminder(ia.guildId, ia.channelId, ia.user.id, parsedDuration, args.loop, args.message)
+        local success, err = _G.reminder:addReminder(ia.guildId, ia.channelId, ia.user.id, parsedDuration, args.loop, args.message)
+
+        if not success then
+            return ia:reply("Sorry, I wasn't able to add that reminder. "..err, true)
+        end
 
         if args.loop then
             ia:reply("Sure! I will now keep reminding you <t:"..os.time() + parsedDuration..":R>"..messageEnding)

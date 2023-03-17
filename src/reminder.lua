@@ -11,6 +11,12 @@ function reminder:addReminder(guildId, channelId, userId, duration, looping, mes
 
     local reminders
 
+    local currentReminders = self:listReminders(guildId, nil, userId)
+
+    if #currentReminders >= 25 then
+        return false, "You can only have a max amount of 25 reminders per guild."
+    end
+
     if guildId ~= nil then
         if not remindersDataRead[guildId] then
             remindersDataRead[guildId] = {
@@ -74,6 +80,8 @@ function reminder:addReminder(guildId, channelId, userId, duration, looping, mes
     reminders:write(remindersRead)
 
     self.waitTime = math.min(self.waitTime, finishedTime)
+
+    return true
 end
 
 function reminder:removeReminder(guildId, channelId, userId, index)
@@ -162,8 +170,8 @@ function reminder:listReminders(guildId, channelId, userId)
     local remindersTable = {}
 
     for i, v in ipairs(remindersRead) do
-        if v.channelId == channelId then
-            if v.userId == userId then
+        if not channelId or (v.channelId == channelId) then
+            if not userId or (v.userId == userId) then
                 table.insert(remindersTable, v)
             end
         end
