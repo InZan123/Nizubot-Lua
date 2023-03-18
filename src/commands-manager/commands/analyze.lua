@@ -8,6 +8,8 @@ function command.run(client, ia, cmd, args)
         args = args.message
 
         local message = ia.channel:getMessage(args.message_id)
+        
+        if message == nil then return ia:reply("Please provide an actual message id!", true) end
 
         local information = ""
 
