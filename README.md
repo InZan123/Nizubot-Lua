@@ -31,7 +31,7 @@ lit install luvit/http-codec
 
 This bot also uses coro-spawn. Here's how you install that.
 ```
-lit install luvit/http-codec
+lit install creationix/coro-spawn
 ```
 
 If when running the bot you incounter an issue with Discordia-Slash, try updating it by running the following commands:
