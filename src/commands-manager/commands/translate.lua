@@ -171,6 +171,7 @@ command.info = {
                     name = "text",
                     description = "Text you wanna translate.",
                     type = dia.enums.appCommandOptionType.string,
+                    max_length = 2048,
                     required = true
                 },
                 {

@@ -24,7 +24,8 @@ command.info = {
             name = "data",
             description = "Data to store.",
             type = dia.enums.appCommandOptionType.string,
-            required = true
+            required = true,
+            max_length = 1000
         }
     }
 }

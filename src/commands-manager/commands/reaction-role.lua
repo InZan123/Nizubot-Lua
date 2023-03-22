@@ -106,7 +106,7 @@ command.info = {
                 },
                 {
                     name = "emoji",
-                    description = "The emoji to react to.",
+                    description = "The emoji to react with.",
                     type = dia.enums.appCommandOptionType.string,
                     required = true
                 },

@@ -107,12 +107,14 @@ command.info = {
                     name = "duration",
                     description = "When do you want me to remind you? Example: 1s 2m 3h 4d 5w 6y",
                     type = dia.enums.appCommandOptionType.string,
+                    max_length = 50,
                     required = true
                 },
                 {
                     name = "message",
                     description = "Message of the reminder.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    max_length = 128
                 },
                 {
                     name = "loop",
