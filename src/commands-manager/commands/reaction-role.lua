@@ -91,7 +91,7 @@ command.info = {
     dm_permission = false,
     description = "Reaction role.",
     type = dia.enums.appCommandType.chatInput,
-    default_member_permissions = 268435520, --manage roles and add reactions
+    default_member_permissions = "0",
     options = {
         {
             name = "add",

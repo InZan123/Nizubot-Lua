@@ -40,7 +40,7 @@ command.info = {
     dm_permission = false,
     description = "COTD role.",
     type = dia.enums.appCommandType.chatInput,
-    default_member_permissions = 268435456, --manage roles
+    default_member_permissions = "0",
     options = {
         {
             name = "make",

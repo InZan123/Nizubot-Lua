@@ -23,21 +23,20 @@ function command.run(client, ia, cmd, args)
         return SendSortedList(client, ia, args.user.id or ia.user.id, args.index, true)
     end
 
-    coroutine.wrap(function() --basically what this mess is, if members arent cached, cache them. Then call SendSortedList
-		if #guild.members ~= guild.totalMemberCount then
-            guild:requestMembers()
+    --basically what this mess is, if members arent cached, cache them. Then call SendSortedList
+	if #guild.members ~= guild.totalMemberCount then
+        guild:requestMembers()
+    end
+    local tries = 0
+    while true do
+        tries = tries + 1
+        if tries > 20 then --if it takes too long to update we give up
+            return ia:reply("Please try again.\n\nGuild has "..guild.totalMemberCount.." members but I only found "..#guild.members..".", true)
+        elseif #guild.members >= guild.totalMemberCount then
+            return SendSortedList(client, ia, args.user.id or ia.user.id, args.index, false)
         end
-        local tries = 0
-        while true do
-            tries = tries + 1
-            if tries > 20 then --if it takes too long to update we give up
-                return ia:reply("Please try again.\n\nGuild has "..guild.totalMemberCount.." members but I only found "..#guild.members..".", true)
-            elseif #guild.members >= guild.totalMemberCount then
-                return SendSortedList(client, ia, args.user.id or ia.user.id, args.index, false)
-            end
-            timer.sleep(100)
-        end
-	end)()
+        timer.sleep(100)
+    end
 end
 
 

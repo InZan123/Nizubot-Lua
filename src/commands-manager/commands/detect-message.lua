@@ -59,7 +59,7 @@ print(dia.enums.appCommandOptionType.subCommand)
 command.info = {
     name = "detectmessage",
     description = "Events for when bot detects a message.",
-    default_member_permissions = 0,
+    default_member_permissions = "0",
     type = dia.enums.appCommandType.chatInput,
     options = {
         {
