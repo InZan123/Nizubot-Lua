@@ -9,18 +9,15 @@ local spawn = require('coro-spawn')
 local command = {}
 
 function command.run(client, ia, cmd, args)
-    coroutine.wrap(function ()
-        ia:replyDeferred()
-    
-        local handle = spawn("sleep", {
-            args={args.seconds}
-        })
+    ia:replyDeferred()
 
-        handle.waitExit()
+    local handle = spawn("powershell", {
+        args={"sleep", args.seconds}
+    })
 
+    handle.waitExit()
 
-        ia:reply("I am done thinking.")
-    end)()
+    ia:reply("I am done thinking.")
 end
 
 command.info = {
