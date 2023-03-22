@@ -16,7 +16,6 @@ end
 
 command.info = {
     name = "store",
-    dm_permission = false,
     description = "Stores data.",
     type = dia.enums.appCommandType.chatInput,
     options = {
