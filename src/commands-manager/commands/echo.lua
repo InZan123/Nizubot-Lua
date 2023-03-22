@@ -10,10 +10,13 @@ function echo.run(client, ia, cmd, args)
         ia:reply("**\n**", false)
         return
     end
-    if args.embed ~= nil then
-        args.embed = json.parse(args.embed)
-        if type(args.embed) ~= "table" then
+    if args.embeds ~= nil then
+        args.embeds = json.parse(args.embeds)
+        if type(args.embeds) ~= "table" then
             return ia:reply("Please send accurate JSON embed data.", true)
+        end
+        if not args.embeds[1] then
+            args.embeds = {args.embeds}
         end
     end
     local success, err = ia:reply(args, false)
@@ -50,8 +53,10 @@ function cleanecho.run(client, ia, cmd, args)
         if message == nil then return ia:reply("Please provide an actual message id!", true) end
         if message.author.id ~= client.user.id then return ia:reply("Please provide a message sent by me!", true) end
 
+        args.message_id = nil
+
         if next(args) == nil then
-            message:update("**\n**")
+            message:update{content="**\n**"}
             ia:reply("I've edited the message.", true)
             return
         end
@@ -76,14 +81,15 @@ echo.info = {
     type = dia.enums.appCommandType.chatInput,
     options = {
         {
-            name = "embed",
-            description = "Embed of the message.",
+            name = "embeds",
+            description = "Embeds of the message.",
             type = dia.enums.appCommandOptionType.string
         },
         {
             name = "content",
             description = "Contents of the message.",
-            type = dia.enums.appCommandOptionType.string
+            type = dia.enums.appCommandOptionType.string,
+            max_length = 2000
         }
     }
 }
@@ -100,14 +106,15 @@ cleanecho.info = {
             type = dia.enums.appCommandOptionType.subCommand,
             options = {
                 {
-                    name = "embed",
-                    description = "Embed of the message.",
+                    name = "embeds",
+                    description = "Embeds of the message.",
                     type = dia.enums.appCommandOptionType.string
                 },
                 {
                     name = "content",
                     description = "Contents of the message.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    max_length = 2000
                 }
             }
         },
@@ -123,14 +130,15 @@ cleanecho.info = {
                     required = true
                 },
                 {
-                    name = "embed",
-                    description = "Embed of the message.",
+                    name = "embeds",
+                    description = "Embeds of the message.",
                     type = dia.enums.appCommandOptionType.string
                 },
                 {
                     name = "content",
                     description = "Contents of the message.",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    max_length = 2000
                 }
             }
         }
