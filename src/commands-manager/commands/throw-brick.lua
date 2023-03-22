@@ -3,6 +3,7 @@ local funs = require("src/functions")
 local fs = require("fs")
 local http = require('coro-http')
 local os = require("os")
+local spawn = require('coro-spawn')
 
 local command = {}
 
@@ -83,13 +84,21 @@ function command.run(client, ia, cmd, args)
             lastPfpFetch = args.user.avatarURL
             lastPfpFetchData:write(lastPfpFetch)
         end
-        
-        local ffmpegCommand = "ffmpeg -i "..brickGif.." -i "..userPfpFile.." -ss 00:00:00 -t 00:00:01.8 -filter_complex \"[1:v]scale=48:48,pad=width=300:height=300:x=114:y=252:color=0x00000000[ico];[ico][0:v]overlay=0:0:enable='between(t,0,20)',split=2[out1][out2];[out2]palettegen=reserve_transparent=on[p];[out1][p]paletteuse\" "..brickGifFile.." -y"
-        local handle = io.popen(ffmpegCommand) -- for some reason os.execute doesnt work idk why
+        local handle = spawn("ffmpeg", {
+            args={
+                "-i", brickGif,
+                "-i", userPfpFile,
+                "-ss", "00:00:00",
+                "-t", "00:00:01.8",
+                "-filter_complex", "[1:v]scale=48:48,pad=width=300:height=300:x=114:y=252:color=0x00000000[ico];[ico][0:v]overlay=0:0:enable='between(t,0,20)',split=2[out1][out2];[out2]palettegen=reserve_transparent=on[p];[out1][p]paletteuse",
+                brickGifFile,
+                "-y"
+            }
+        })
         lastBrickPfp = args.user.avatarURL
         lastBrickPfpData:write(lastBrickPfp)
         if handle then
-            handle:close()
+            handle:waitExit()
         end
     end
 

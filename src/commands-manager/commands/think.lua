@@ -15,7 +15,9 @@ function command.run(client, ia, cmd, args)
         args={"sleep", args.seconds}
     })
 
-    handle.waitExit()
+    if handle then
+        handle:waitExit()
+    end
 
     ia:reply("I am done thinking.")
 end
