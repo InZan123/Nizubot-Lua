@@ -9,8 +9,7 @@ function command.run(client, ia, cmd, args)
     if command.spinning[ia.user.id] then
         return ia:reply("You are already spinning a spinner!", true)
     end
-    local co = coroutine.create(SpinSpinner)
-    coroutine.resume(co, ia)
+    SpinSpinner(ia)
 end
 
 function SpinSpinner(ia)
