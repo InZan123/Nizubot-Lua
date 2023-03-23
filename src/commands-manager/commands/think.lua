@@ -11,9 +11,17 @@ local command = {}
 function command.run(client, ia, cmd, args)
     ia:replyDeferred()
 
-    local handle = spawn("powershell", {
-        args={"sleep", args.seconds}
-    })
+    local handle
+
+    if _G.os_name == "Windows_NT" then
+        handle = spawn("powershell", {
+            args={"sleep", args.seconds}
+        })
+    else
+        handle = spawn("sleep", {
+            args={args.seconds}
+        })
+    end
 
     if handle then
         handle:waitExit()

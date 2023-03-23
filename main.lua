@@ -11,6 +11,10 @@ _G.reminder = require('./src/reminder')
 _G.cotd = require("./src/cotd")
 _G.detector = require("./src/detector")
 
+_G.os_name = funs.get_os_name()
+
+print("Running on ".._G.os_name)
+
 CommandsManager = require("./src/commands-manager")
 local client = dia.Client{
     gatewayIntents = 3243775
