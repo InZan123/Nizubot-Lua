@@ -38,6 +38,9 @@ function cleanecho.run(client, ia, cmd, args)
             if type(args.embeds) ~= "table" then
                 return ia:reply("Please send accurate JSON embed data.", true)
             end
+            if not args.embeds[1] then
+                args.embeds = {args.embeds}
+            end
         end
         local success, err = ia.channel:send(args)
         if success then
@@ -60,10 +63,13 @@ function cleanecho.run(client, ia, cmd, args)
             ia:reply("I've edited the message.", true)
             return
         end
-        if args.embed ~= nil then
-            args.embed = json.parse(args.embed)
-            if type(args.embed) ~= "table" then
+        if args.embeds ~= nil then
+            args.embeds = json.parse(args.embeds)
+            if type(args.embeds) ~= "table" then
                 return ia:reply("Please send accurate JSON embed data.", true)
+            end
+            if not args.embeds[1] then
+                args.embeds = {args.embeds}
             end
         end
         local success, err = message:update(args)
@@ -130,8 +136,8 @@ cleanecho.info = {
                     required = true
                 },
                 {
-                    name = "embed",
-                    description = "Embed of the message.",
+                    name = "embeds",
+                    description = "Embeds of the message.",
                     type = dia.enums.appCommandOptionType.string
                 },
                 {
