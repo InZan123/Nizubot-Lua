@@ -2,15 +2,20 @@
  The new Nizubot written in Lua instead of C#.
 
 # Installing required things
-This bot runs on [Luvit](https://luvit.io/) and uses [Discordia](https://github.com/SinisterRectus/Discordia) with slash commands using a [fork of Discordia-Slash](https://github.com/InZan123/discordia-slash).
+This bot runs on [Luvit](https://luvit.io/) and uses [Discordia](https://github.com/SinisterRectus/Discordia) with slash commands using [Discordia-Slash](https://github.com/GitSparTV/discordia-slash).
+(Please note that my bot uses my custom forks of Discordia and Discordia-Slash, which include additional features I use. Although I submit pull requests for these features, they may not have been accepted yet. The installation commands in this README will install my forks, not the original repositories.)
 
 To setup everything you first need to install Luvit which you can do by reading [Luvits instructions](https://luvit.io/install.html).
 
 Once Luvit is installed you can start to install all the bots dependencies. First make sure you are in the bots directory before running any commands.
 
-To install Discordia you run this command:
+To install the Discordia fork, run the following commands:
 ```
-lit install SinisterRectus/discordia
+lit install SinisterRectus/discordia #This is to install all dependencies of Discordia.
+```
+Now you need to remove discordia from the deps folder to then install the fork. (Keep all the other stuff in the deps folder)
+```
+git clone https://github.com/InZan123/discordia.git ./deps/discordia #This is to install the actual fork
 ```
  
 To install the Discordia-Slash fork you run this command:
@@ -34,13 +39,12 @@ This bot also uses coro-spawn. Here's how you install that.
 lit install creationix/coro-spawn
 ```
 
-If when running the bot you incounter an issue with Discordia-Slash, try updating it by running the following commands:
+If when running the bot you incounter an issue with Discordia-Slash or with Discordia, try updating them by running the following commands:
 ```
-rm -r ./deps/discordia-slash
+git -C ./deps/discordia-slash pull
 ```
-(You could also just remove the discordia-slash folder in the deps folder)
 ```
-git clone https://github.com/InZan123/discordia-slash.git ./deps/discordia-slash
+git -C ./deps/discordia pull
 ```
 
 Once all that is done, create a file called "token" with no extensions and put your bot token in there.
