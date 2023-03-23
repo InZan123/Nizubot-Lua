@@ -3,6 +3,7 @@
 
 # Installing required things
 This bot runs on [Luvit](https://luvit.io/) and uses [Discordia](https://github.com/SinisterRectus/Discordia) with slash commands using [Discordia-Slash](https://github.com/GitSparTV/discordia-slash).
+
 (Please note that my bot uses my custom forks of Discordia and Discordia-Slash, which include additional features I use. Although I submit pull requests for these features, they may not have been accepted yet. The installation commands in this README will install my forks, not the original repositories.)
 
 To setup everything you first need to install Luvit which you can do by reading [Luvits instructions](https://luvit.io/install.html).
@@ -11,7 +12,7 @@ Once Luvit is installed you can start to install all the bots dependencies. Firs
 
 To install the Discordia fork, run the following commands:
 ```
-lit install SinisterRectus/discordia #This is to install all dependencies of Discordia.
+lit install SinisterRectus/discordia #This is to get all dependencies of Discordia.
 ```
 Now you need to remove discordia from the deps folder to then install the fork. (Keep all the other stuff in the deps folder)
 ```
@@ -53,6 +54,15 @@ You should now be able to run the bot by running this command:
 ```
 luvit main.lua
 ```
+
+# Additional stuff
+There are a few commands that requires some special things. These are /translate, /currency and /brick.
+
+/translate requires that you have a file called "libreTranslateUrl" with a url to [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate). If you are hosting it yourself then the url should be "http://localhost:5000/".
+
+/currency requires that you have a file called "openExchangeRatesApiKey" with an api key to [Open Exchange Rates](https://openexchangerates.org/). You should be able to safely use the free plan without hitting the request limit since this bot remembers the requests.
+
+/brick requires that you have [FFmpeg](https://ffmpeg.org/) installed. This is to generate the gif.
 
 # Contributing
 Feel free to contribute to this project! When contributing you agree to license your contribution under the terms of the GPL-3.0 license.
