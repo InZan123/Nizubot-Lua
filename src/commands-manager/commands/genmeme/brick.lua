@@ -5,9 +5,9 @@ local http = require('coro-http')
 local os = require("os")
 local spawn = require('coro-spawn')
 
-local command = {}
+local subCommand = {}
 
-function command.run(client, ia, cmd, args)
+function subCommand.run(client, ia, cmd, args)
 
     args = args or {}
 
@@ -103,14 +103,14 @@ function command.run(client, ia, cmd, args)
     end
 
     ia:reply{
-        file="data/generated/brick/"..userId..".gif"
+        file=brickGifFile
     }
 end
 
-command.info = {
+subCommand.info = {
     name = "brick",
     description = "Generate a gif of some user throwing a brick.",
-    type = dia.enums.appCommandType.chatInput,
+    type = dia.enums.appCommandOptionType.subCommand,
     options = {
         {
             type = dia.enums.appCommandOptionType.user,
@@ -120,4 +120,4 @@ command.info = {
     }
 }
 
-return command
+return subCommand
