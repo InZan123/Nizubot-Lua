@@ -229,12 +229,12 @@ subCommand.info = {
         {
             type = dia.enums.appCommandOptionType.string,
             name = "breakheight",
-            description = "How big the space between new lines should be (Default: fontsize/4)"
+            description = "How big the space between new lines should be. (Default: fontsize/4)"
         },
         {
             type = dia.enums.appCommandOptionType.string,
             name = "padding",
-            description = "How much empty space there should be above and below the text (WHAT: width/9, Boxes: width/20, Overlay: height/30)"
+            description = "Amount of empty space around the text. (WHAT: width/9, Boxes: width/20, Overlay: height/30)"
         }
     }
 }
