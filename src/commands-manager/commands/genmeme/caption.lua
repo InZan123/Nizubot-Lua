@@ -147,6 +147,10 @@ function subCommand.run(client, ia, cmd, args)
         ffmpegFilter=ffmpegFilter.."drawtext=text="..v..":font="..font..":x=(main_w-text_w)/2:y=main_h"..alignmentOffset.."-"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
     end
 
+    if extension == "gif" then
+        ffmpegFilter=ffmpegFilter.."split=2[s0][s1];[s0]palettegen=reserve_transparent=on[p];[s1][p]paletteuse,"
+    end
+
     local res, body = http.request("GET", args.image.url)
     if res.code ~= 200 then
         return ia:reply("Sorry, I was unable to get your image.", true)
