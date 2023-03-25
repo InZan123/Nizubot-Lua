@@ -155,6 +155,8 @@ function subCommand.run(client, ia, cmd, args)
     fs.writeSync(imageFileW, 0, body)
     fs.closeSync(imageFileW)
 
+    ffmpegFilter = ffmpegFilter:sub(1, -2) --the last character is a , so we remove it
+
     print(ffmpegFilter)
 
     local handle, err = spawn("ffmpeg", {
