@@ -18,6 +18,9 @@ function funs.round(number)
 end
 
 function funs.split(inputstr, sep)
+    if inputstr == nil then
+        return {}
+    end
     if sep == nil then
         sep = "%s"
     end
@@ -91,6 +94,22 @@ function funs.get_os_name()
     end
 
     return "Unknown"
+end
+
+function funs.solveStringMath(str)
+    if str:match("[^%d%.%+%-%*/%(%)]") then
+        return nil
+    end
+    local fn, err = load("return "..str)
+    if err then
+        return nil
+    end
+    local success, res = pcall(fn)
+    if success then
+        return res
+    else
+        return nil
+    end
 end
 
 return funs
