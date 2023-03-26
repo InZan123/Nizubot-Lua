@@ -97,6 +97,9 @@ function command.run(client, ia, cmd, args)
         if not message then
             return ia:reply("Please provide an actual message ID.", true)
         end
+        if message.content == "" then
+            return ia:reply("Please provide a message with content to translate.", true)
+        end
         args.text = message.content
     else
         return ia:reply{embed=languagesListEmbed}
