@@ -83,6 +83,18 @@ function subCommand.run(client, ia, cmd, args)
     local padding = (args.padding and funs.solveStringMath(args.padding:gsub("width", width):gsub("height", height):gsub("fontsize", fontsize)))
     or (args.type == "what" and width/9) or (args.type == "overlay" and height/30) or width/20
 
+    if fontsize < 0 then
+        return ia:reply("Please make sure \"fontsize\" isn't a negative number.", true)
+    end
+
+    if breakheight < 0 then
+        return ia:reply("Please make sure \"breakheight\" isn't a negative number.", true)
+    end
+
+    if padding < 0 then
+        return ia:reply("Please make sure \"padding\" isn't a negative number.", true)
+    end
+
     local ffmpegFilter = "[0]"
 
     local font = (args.type == "what" and "Times New Roman") or "Impact"
@@ -125,7 +137,7 @@ function subCommand.run(client, ia, cmd, args)
         local alignmentOffset = "-max_glyph_a+"..fontAscent+fontDescent/2
         local lineOffset = padding + (fontsize+breakheight)*(i-1)
 
-        ffmpegFilter=ffmpegFilter.."drawtext=text='"..SanitizeString(v).."':x=(main_w-text_w)/2:y="..alignmentOffset.."+"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
+        ffmpegFilter=ffmpegFilter.."drawtext=text='"..SanitizeString(v).."':font="..font..":x=(main_w-text_w)/2:y="..alignmentOffset.."+"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
     end
 
     for i, v in ipairs(bottomTexts) do
