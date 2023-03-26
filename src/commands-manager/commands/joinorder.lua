@@ -90,7 +90,7 @@ function SendSortedList(client, ia, targetUserId, targetIndex, dms)
 
         sortedList:write(finalSortedList)
 
-        targetIndex = targetIndex or hash[targetUserId]
+        targetIndex = targetIndex or hash[targetUserId] or #finalSortedList+1
 
         maxIndex = targetIndex+4
         minIndex = targetIndex-4
