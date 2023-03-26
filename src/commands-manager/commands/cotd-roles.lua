@@ -29,6 +29,9 @@ function command.run(client, ia, cmd, args)
         local cotdRolesData = _G.storageManager:getData("cotdRoles", {})
         local cotdRolesRead = cotdRolesData:read()
         local roleId = cotdRolesRead[ia.guild.id]
+        if roleId == nil then
+            return ia:reply("This guild does not have a COTD role.", true)
+        end
         cotdRolesRead[ia.guild.id] = nil
         cotdRolesData:write(cotdRolesRead)
         ia:reply("Successfully removed <@&"..roleId.."> as a COTD role.", true)
