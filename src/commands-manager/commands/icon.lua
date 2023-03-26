@@ -60,6 +60,9 @@ function command.run(client, ia, cmd, args)
                 }
             }
         else
+            if ia.guild.iconURL == nil then
+                return ia:reply("Sorry, this guild does not have an icon.", true)
+            end
             embed = {
                 title = ia.guild.name.."'s icon",
                 image = {
