@@ -27,10 +27,6 @@ end
 
 function subCommand.run(client, ia, cmd, args)
 
-    print(ia.id)
-
-    ia:replyDeferred()
-
     local captionFolder = "data/generated/caption/"
     local imagesFolder = "data/downloads/images/"
 
@@ -143,6 +139,8 @@ function subCommand.run(client, ia, cmd, args)
     if extension == "gif" then
         ffmpegFilter=ffmpegFilter.."split=2[s0][s1];[s0]palettegen=reserve_transparent=on[p];[s1][p]paletteuse,"
     end
+
+    ia:replyDeferred()
 
     local res, body = http.request("GET", args.image.url)
     if res.code ~= 200 then
