@@ -8,17 +8,21 @@ local json = require("json")
 
 local subCommand = {}
 
-function StringIsSafe(str)
-    if str:match("[^%w%s%.%-_/?!]") then
-        return false
-    end
-    if str:match("[;&|<>]") then
-        return false
-    end
-    if str:match("[{}]") then
-        return false
-    end
-    return true
+function SanitizeString(str)
+    print(str)
+    str = str:gsub("\\", "\\\\")
+    str = str:gsub("%%", "%%%%")
+    str = str:gsub(":", "\\:")
+    str = str:gsub(";", "\\;")
+    str = str:gsub("|", "\\|")
+    str = str:gsub("<", "\\<")
+    str = str:gsub(">", "\\>")
+    str = str:gsub("{", "\\{")
+    str = str:gsub("}", "\\}")
+    str = str:gsub("\"", "\\\"")
+    str = str:gsub("'", "\\'")
+    print(str)
+    return str
 end
 
 function subCommand.run(client, ia, cmd, args)
@@ -65,17 +69,6 @@ function subCommand.run(client, ia, cmd, args)
 
     local upperTexts = funs.split(args.uppertext:gsub("\\n", "\n"), "\n")
     local bottomTexts = funs.split(args.bottomtext:gsub("\\n", "\n"), "\n")
-
-    for i, v in pairs(upperTexts) do
-        if not StringIsSafe(v) then
-            return ia:reply("Your text has invalid characters.", true)
-        end
-    end
-    for i, v in pairs(bottomTexts) do
-        if not StringIsSafe(v) then
-            return ia:reply("Your text has invalid characters.", true)
-        end
-    end
 
     local extension = imageInfo[2]
 
@@ -136,7 +129,7 @@ function subCommand.run(client, ia, cmd, args)
         local alignmentOffset = "-max_glyph_a+"..fontAscent+fontDescent/2
         local lineOffset = padding + (fontsize+breakheight)*(i-1)
 
-        ffmpegFilter=ffmpegFilter.."drawtext=text="..v..":font="..font..":x=(main_w-text_w)/2:y="..alignmentOffset.."+"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
+        ffmpegFilter=ffmpegFilter.."drawtext=text='"..SanitizeString(v).."':x=(main_w-text_w)/2:y="..alignmentOffset.."+"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
     end
 
     for i, v in ipairs(bottomTexts) do
@@ -144,7 +137,7 @@ function subCommand.run(client, ia, cmd, args)
         local alignmentOffset = "-max_glyph_a-"..fontsize-fontAscent-fontDescent/2
         local lineOffset = padding + (fontsize+breakheight)*(#bottomTexts-i)
         
-        ffmpegFilter=ffmpegFilter.."drawtext=text="..v..":font="..font..":x=(main_w-text_w)/2:y=main_h"..alignmentOffset.."-"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
+        ffmpegFilter=ffmpegFilter.."drawtext=text='"..SanitizeString(v).."':font="..font..":x=(main_w-text_w)/2:y=main_h"..alignmentOffset.."-"..lineOffset..":fontsize="..fontsize..":fontcolor="..fontColor..","
     end
 
     if extension == "gif" then
