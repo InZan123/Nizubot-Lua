@@ -20,7 +20,7 @@ function SanitizeString(str)
     str = str:gsub("{", "\\{")
     str = str:gsub("}", "\\}")
     str = str:gsub("\"", "\\\"")
-    str = str:gsub("'", "\\'")
+    str = str:gsub("'", "''")
     print(str)
     return str
 end
