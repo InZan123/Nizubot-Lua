@@ -112,4 +112,10 @@ function funs.solveStringMath(str)
     end
 end
 
+function funs.parseDiaError(err)
+    local code = err:gmatch("([^:]+)")()
+    local message = err:sub(code:len()+3)
+    return code:gsub('([^0-9]+)',''), funs.trim(message)
+end
+
 return funs

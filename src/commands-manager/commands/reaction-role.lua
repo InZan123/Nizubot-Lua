@@ -24,28 +24,33 @@ function command.run(client, ia, cmd, args)
 
         local success, err = message:addReaction(emojiId)
 
-        if success then
-            
-            local data = _G.storageManager:getData(
-                "servers/"
-                ..ia.guild.id..
-                "/messages/"
-                ..message.id..
-                "/reaction_roles"
-                ,
-                {}
-            )
-
-            local dataRead = data:read()
-
-            dataRead[emojiId] = args.add.role.id
-
-            data:write(dataRead)
-
-            return ia:reply("Sucessfully added reaction role!\nTo remove the reaction role, simply remove my reaction or run `/reactionrole remove`.", true)
-        else
-            return ia:reply("Something happened while trying to react to message.\n\nHere's the error:\n"..err, true)
+        if not success then
+            local code = funs.parseDiaError(err)
+            if code == "10014" then --Unknown emoji
+                return ia:reply("Sorry, I am not familiar with this emoji.", true)
+            else
+                return ia:reply("Something happened while trying to react to message.\n\nHere's the error:\n"..err, true)
+            end
         end
+        
+        local data = _G.storageManager:getData(
+            "servers/"
+            ..ia.guild.id..
+            "/messages/"
+            ..message.id..
+            "/reaction_roles"
+            ,
+            {}
+        )
+
+        local dataRead = data:read()
+
+        dataRead[emojiId] = args.add.role.id
+
+        data:write(dataRead)
+
+        return ia:reply("Sucessfully added reaction role!\nTo remove the reaction role, simply remove my reaction or run `/reactionrole remove`.", true)
+
     elseif args.remove ~= nil then
         
         local message = ia.channel:getMessage(args.remove.messsage_id)
