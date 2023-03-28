@@ -108,6 +108,8 @@ function command.run(client, ia, cmd, args)
     local from = args.from or "auto"
     local to = args.to or "en"
 
+    ia:replyDeferred()
+
     local success, result = Translate(args.text, from, to)
 
     if not success then
