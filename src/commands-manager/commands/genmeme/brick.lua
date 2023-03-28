@@ -7,6 +7,14 @@ local spawn = require('coro-spawn')
 
 local subCommand = {}
 
+local titles = {
+    "<user> kindly gives you a brick.",
+    "<user> throws a brick at you.",
+    "<user> shares their brick with you.",
+    "This brick is a gift from <user>.",
+    "\"Think fast!\" -<user>"
+}
+
 function subCommand.run(client, ia, cmd, args)
 
     args = args or {}
@@ -89,7 +97,7 @@ function subCommand.run(client, ia, cmd, args)
                 "-i", brickGif,
                 "-i", userPfpFile,
                 "-ss", "00:00:00",
-                "-t", "00:00:01.8",
+                "-t", "00:00:02",
                 "-filter_complex", "[1:v]scale=48:48,pad=width=300:height=300:x=114:y=252:color=0x00000000[ico];[ico][0:v]overlay=0:0:enable='between(t,0,20)',split=2[out1][out2];[out2]palettegen=reserve_transparent=on[p];[out1][p]paletteuse",
                 brickGifFile,
                 "-y"
@@ -102,8 +110,19 @@ function subCommand.run(client, ia, cmd, args)
         end
     end
 
+    local embed = {
+        title = titles[math.random(1,#titles)]:gsub("<user>", args.user.name),
+        footer = {
+            text = "Original gif by \"mega-KOT\" on newgrounds.\nhttps://www.newgrounds.com/art/view/mega-kot/think-fast"
+        },
+        image = {
+            url = "attachment://"..userId..".gif"
+        }
+    }
+
     ia:reply{
-        file=brickGifFile
+        file=brickGifFile,
+        embed=embed
     }
 end
 
