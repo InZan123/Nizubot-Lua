@@ -28,6 +28,11 @@ end
 function cleanecho.run(client, ia, cmd, args)
     if args.clean then
         args = args.clean
+
+        if ia.guild and not ia.guild.me:hasPermission(ia.channel, 2048) then
+            return ia:reply("It seems like I don't have the \"Send Messages\" permission. Please make sure I have a role which grants me this permission.", true)
+        end
+
         if next(args) == nil then
             ia.channel:send("**\n**")
             ia:reply("I've sent the empty message.", true)

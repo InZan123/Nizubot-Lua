@@ -83,7 +83,8 @@ command.info = {
                 {
                     name = "name",
                     description = "The name of the role. <cotd> is replaced by the name of the color. (Default: <cotd>)",
-                    type = dia.enums.appCommandOptionType.string
+                    type = dia.enums.appCommandOptionType.string,
+                    max_length = 100
                 }
             }
         },
