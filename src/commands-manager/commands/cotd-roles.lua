@@ -1,6 +1,7 @@
 local dia = require('discordia')
 local uv = require('uv')
 local json = require"json"
+local funs = require("src/functions")
 
 local command = {}
 
@@ -24,6 +25,10 @@ function command.run(client, ia, cmd, args)
         local role, err = ia.guild:createRole(name)
 
         if not role then
+            local code = funs.parseDiaError(err)
+            if code == "30005" then
+                return ia:reply("It seems like this guild has reached the max amount of roles. Try deleting some of the roles.", true)
+            end
             return ia:reply("Sorry, it seems like I wasn't able to create the role. \n\nHere's the error:\n"..err, true)
         end
 
