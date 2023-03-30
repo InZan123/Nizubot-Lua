@@ -74,6 +74,10 @@ function subCommand.run(client, ia, cmd, args)
     local width = args.image.width
     local height = args.image.height
 
+    if not (width and height) then
+        return ia:reply("Sorry, it seems like your image is corrupted in some way.", true)
+    end
+
     local fontsize = (args.fontsize and funs.solveStringMath(args.fontsize:gsub("width", width):gsub("height", height)))
         or (args.type == "what" and width/7) or (args.type == "overlay" and height/10) or width/10
 
@@ -175,14 +179,15 @@ function subCommand.run(client, ia, cmd, args)
         }
     })
 
-    if handle then
-        local code, sig = handle:waitExit()
-        print(code, sig)
-    else
-        print(err)
+    if not handle then
+        return ia:reply("Sorry, I encountered an error trying to run ffmpeg.\n\nHere's the error:\n"..err, true)
     end
 
+    local code, sig = handle:waitExit()
 
+    if code ~= 0 then
+        return ia:reply("Sorry, ffmpeg has encountered an issue.\n\nHere's the error code:\n"..code, true)
+    end
 
     ia:reply{
         file=captionFile
