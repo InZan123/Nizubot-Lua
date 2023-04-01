@@ -58,7 +58,7 @@ function command.run(client, ia, cmd, args)
             local role = ia.guild:getRole(roleInfo.id)
             if role then
                 if not role:delete() then
-                    ia:reply("<@&"..roleInfo.id.."> is no longer a COTD role but I was unable to delete it.", true)
+                    return ia:reply("<@&"..roleInfo.id.."> is no longer a COTD role but I was unable to delete it.", true)
                 end
             end
             ia:reply("<@&"..roleInfo.id.."> has been successfully deleted.", true)
