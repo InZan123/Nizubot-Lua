@@ -144,4 +144,15 @@ command.info = {
     }
 }
 
+command.permissions = {
+    {
+        permission = dia.enums.permission.sendMessages,
+        failMessage = "This command requires that I have the \"Send Messages\" permission. Please make sure I have it."
+    },
+    {
+        permission = dia.enums.permission.readMessages,
+        failMessage = "This command requires that I have the \"Read Messages\" permission. Please make sure I have it by enabling the \"View Channels\" permissions."
+    }
+}
+
 return command

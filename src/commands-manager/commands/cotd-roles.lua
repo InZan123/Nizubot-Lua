@@ -7,19 +7,13 @@ local command = {}
 
 function command.run(client, ia, cmd, args)
     if args.create then
+
         local name = args.create.name or "<cotd>"
         local cotdRolesData = _G.storageManager:getData("cotdRoles", {})
         local cotdRolesRead = cotdRolesData:read()
 
-
-        
-
         if cotdRolesRead[ia.guild.id] then
             return ia:reply("You already have a COTD role! <@&"..cotdRolesRead[ia.guild.id].id..">", true)
-        end
-
-        if not ia.guild.me:hasPermission(268435456) then
-            return ia:reply("I am unable to update this role because I don't have the \"Manage Roles\" permission.", true)
         end
 
         local role, err = ia.guild:createRole(name)
@@ -100,6 +94,13 @@ command.info = {
                 }
             }
         }
+    }
+}
+
+command.permissions = {
+    {
+        permission = dia.enums.permission.manageRoles,
+        failMessage = "This command requires that I have the \"Manage Roles\" permission. Please make sure I have it."
     }
 }
 

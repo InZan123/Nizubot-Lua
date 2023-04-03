@@ -5,10 +5,11 @@ local command = {}
 
 function command.run(client, ia, cmd, args)
     local now = uv.now()
-    local msg = ia:reply("pong!", false)
+    
+    ia:replyDeferred()
     
     now = uv.now()-now
-    ia:getReply():update{content = "pong! `"..now.."ms`"}
+    ia:reply("pong! `"..now.."ms`")
 end
 
 command.info = {

@@ -33,15 +33,29 @@ function manager:setupCommands(client)
 end
 
 function manager:onSlashCommand(client, ia, cmd, args)
-    local success, error = pcall(function() 
+    local success, err = xpcall(coroutine.wrap(function()
         local command = self.commands[cmd.name]
+        if command.permissions then
+            if ia.guild then
+                local me = ia.guild.me or ia.guild:getMember(client.user.id)
+                for i, v in ipairs(command.permissions) do
+                    if not me:hasPermission(ia.channel, v.permission) then
+                        return ia:reply(v.failMessage, true)
+                    end
+                end
+            end
+        end
+
         command.run(client, ia, cmd, args)
-    end)
+    end),
+    debug.traceback)
+
 
     if not success then
-        print(error)
-        ia:reply("Sorry! An error occured trying to run the command.\n\nHere's the error:\n"..error, true)
+        print(err)
+        ia:reply("Sorry! An error occured trying to run the command.\n\nHere's the error:\n"..err, true)
     end
+
 end
 
 return manager

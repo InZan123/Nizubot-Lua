@@ -3,7 +3,7 @@ local json = require('json')
 
 local commands = {}
 local echo = {}
-local cleanecho = {}
+local adminecho = {}
 
 function echo.run(client, ia, cmd, args)
     if args == nil then
@@ -25,13 +25,9 @@ function echo.run(client, ia, cmd, args)
     end
 end
 
-function cleanecho.run(client, ia, cmd, args)
+function adminecho.run(client, ia, cmd, args)
     if args.clean then
         args = args.clean
-
-        if ia.guild and not ia.guild.me:hasPermission(ia.channel, 2048) then
-            return ia:reply("It seems like I don't have the \"Send Messages\" permission. Please make sure I have a role which grants me this permission.", true)
-        end
 
         if next(args) == nil then
             ia.channel:send("**\n**")
@@ -105,7 +101,7 @@ echo.info = {
     }
 }
 
-cleanecho.info = {
+adminecho.info = {
     name = "adminecho",
     description = "I will say what you want.",
     type = dia.enums.appCommandType.chatInput,
@@ -155,8 +151,15 @@ cleanecho.info = {
         }
     }
 }
+adminecho.permissions = {
+    {
+        permission = dia.enums.permission.sendMessages,
+        failMessage = "This command requires that I have the \"Send Messages\" permission. Please make sure I have it."
+    }
+}
+
 
 table.insert(commands, echo)
-table.insert(commands, cleanecho)
+table.insert(commands, adminecho)
 
 return commands
