@@ -1,9 +1,10 @@
 local storageManager = {}
 
-local fs = require('fs')
 local json = require('json')
 local timer = require('timer')
 local funs = require("src/functions")
+
+local fs = require("coro-fs")
 
 storageManager.filePath = "./data"
 
@@ -70,13 +71,13 @@ function storageManager:getData(key, defaultData)
 
     local filePath = self:getFullPath(key)
 
-    if not fs.existsSync(filePath) then
+    if not fs.stat(filePath) then
         return self:cloneTemplate(key, defaultData, false)
     end
 
-    local file = fs.openSync(filePath, "r")
-    local data = fs.readSync(file)
-    fs.closeSync(file)
+    local file = fs.open(filePath, "r")
+    local data = fs.read(file)
+    fs.close(file)
     dataTable = self:cloneTemplate(key, json.parse(data), true)
     self.loadedData[key] = dataTable
     return dataTable
@@ -91,13 +92,13 @@ function storageManager:saveAllData()
 
         local filePath = self:getFullPath(key)
         local fileDirectory = self:getDirectory(key)
-        if not fs.existsSync(fileDirectory) then
+        if not fs.stat(fileDirectory) then
             funs.createDirRecursive(fileDirectory)
         end
 
-        local file = fs.openSync(filePath, "w")
-        fs.writeSync(file, 0, json.stringify(data:read()))
-        fs.closeSync(file)
+        local file = fs.open(filePath, "w")
+        fs.write(file, json.stringify(data:read()))
+        fs.close(file)
         data.saved = true
 
         ::continue::
@@ -110,9 +111,23 @@ function storageManager:deleteData(key)
     self.loadedData[key] = nil
 end
 
+local imagesFolder = "data/downloads/images/"
+
 coroutine.wrap(function()
 	while true do
         storageManager:saveAllData()
+
+        local now = os.time()
+
+        for file in fs.scandir(imagesFolder) do
+
+            local mTime = fs.stat(imagesFolder .. "/" .. file.name).mtime.sec
+
+            if now - mTime > 60 then
+                fs.unlink(imagesFolder .. "/" .. file.name)
+            end
+        end
+
 		timer.sleep(1000)
 	end
 end)()
