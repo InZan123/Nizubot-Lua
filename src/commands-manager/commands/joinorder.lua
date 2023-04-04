@@ -128,11 +128,12 @@ function SendSortedList(client, ia, targetUserId, targetIndex, dms)
 
     --generate description
     for i = minIndex, maxIndex do
-        description = description.."**"..i..".** <@!"..finalSortedList[i]..">"
+        local member = (not dms and ia.guild.members:get(finalSortedList[i]) or nil) or client:getUser(finalSortedList[i])
+        description = description.."**"..i..".** "..(member and member.tag or finalSortedList[i])
         if finalSortedList[i] == ia.user.id then
-            description = description.." *(you)*\n"
+            description = description.." ***(you)***\n"
         elseif targetIndex == i or targetUserId == finalSortedList[i] then
-            description = description.." *(target)*\n"
+            description = description.." ***(target)***\n"
         else
             description = description.."\n"
         end

@@ -33,7 +33,7 @@ function manager:setupCommands(client)
 end
 
 function manager:onSlashCommand(client, ia, cmd, args)
-    local success, err = xpcall(coroutine.wrap(function()
+    local success, err = xpcall(function()
         local command = self.commands[cmd.name]
         if command.permissions then
             if ia.guild then
@@ -47,7 +47,7 @@ function manager:onSlashCommand(client, ia, cmd, args)
         end
 
         command.run(client, ia, cmd, args)
-    end),
+    end,
     debug.traceback)
 
 
