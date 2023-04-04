@@ -22,93 +22,155 @@ function storageManager:getDirectory(key)
 end
 
 storageManager.loadedData = {}
+storageManager.pendingSaving = {}
 
-storageManager.dataTemplate = {
-    saved = true,
-    registered = false,
-    storageManager = storageManager,
-    data = nil,
-    key = nil,
-
-    read = function(self)
-        return self.data
-    end,
-
-    write = function(self, newData)
-        self.data = newData
-        self.saved = false
-        if self.registered == false then
-            self.registered = true
-            self.storageManager.loadedData[self.key] = self
+function storageManager:createData(key, defaultData, registered)
+    if not key then
+        return error("Please provide a key!!!",2)
+    end
+    local data = {
+        saved = true,
+        registered = false,
+        storageManager = storageManager,
+        data = nil,
+        key = nil,
+    
+        read = function(self)
+            return self.data
+        end,
+    
+        write = function(self, newData)
+            self.data = newData
+            self.saved = false
+            self.storageManager.pendingSaving[self.key] = self
+            if self.registered == false then
+                self.registered = true
+                self.storageManager:getTable(self.key).data = self
+            end
+        end,
+    
+        delete = function(self)
+            self.storageManager:deleteData(self.key)
+        end,
+    
+        isSaved = function(self)
+            return self.saved
         end
-    end,
+    }
+    data.key = key
+    data.data = defaultData
+    data.registered = registered or false
+    return data
+end
 
-    delete = function(self)
-        self.storageManager:deleteData(self.key)
-    end,
+function storageManager:getTable(key)
+    local keys={}
 
-    isSaved = function(self)
-        return self.saved
+    for str in string.gmatch(key, "([^/]+)") do
+        table.insert(keys, str)
     end
-}
 
-function storageManager:cloneTemplate(key, defaultData, registered)
-    local copy = {}
-    for orig_key, orig_value in pairs(self.dataTemplate) do
-        copy[orig_key] = orig_value
+    local current = self.loadedData
+
+    for i, v in ipairs(keys) do
+        if v == "data" then
+            error('"data" cannot be a part of the key!!!',2)
+            return {}
+        end
+        local data = current[v]
+        if not data then
+            data = {}
+            current[v] = data
+            current = data
+        else
+            current = data
+        end
     end
-    copy.key = key
-    copy.data = defaultData
-    copy.registered = registered or false
-    return copy
+    return current
+end
+
+function storageManager:removeTable(key)
+    local keys={}
+
+    for str in string.gmatch(key, "([^/]+)") do
+        table.insert(keys, str)
+    end
+
+    local current = self.loadedData
+
+    for i, v in ipairs(keys) do
+        if v == "data" then
+            error('"data" cannot be a part of the key!!!',2)
+            return
+        end
+
+        if i == #keys then
+            current[v] = nil
+            return
+        end
+
+        local data = current[v]
+        if not data then
+            data = {}
+            current[v] = data
+            current = data
+        else
+            current = data
+        end
+    end
 end
 
 function storageManager:getData(key, defaultData)
-    local dataTable = self.loadedData[key]
-    if dataTable ~= nil then
-        return dataTable
+
+    local keyTable = self:getTable(key)
+
+    if keyTable.data then
+        return keyTable.data
     end
 
     local filePath = self:getFullPath(key)
 
     if not fs.stat(filePath) then
-        return self:cloneTemplate(key, defaultData, false)
+        return self:createData(key, defaultData, false)
     end
 
     local file = fs.open(filePath, "r")
     local data = fs.read(file)
     fs.close(file)
-    dataTable = self:cloneTemplate(key, json.parse(data), true)
-    self.loadedData[key] = dataTable
+    local dataTable = self:createData(key, json.parse(data), true)
+    keyTable.data = dataTable
     return dataTable
 end
 
 function storageManager:saveAllData()
-    for key, data in pairs(self.loadedData) do
-
-        if data:isSaved() then goto continue end
+    local savedKeys = {}
+    for key, data in pairs(self.pendingSaving) do
 
         print("Saving "..key)
 
         local filePath = self:getFullPath(key)
         local fileDirectory = self:getDirectory(key)
         if not fs.stat(fileDirectory) then
-            funs.createDirRecursive(fileDirectory)
+            fs.mkdirp(fileDirectory)
         end
 
         local file = fs.open(filePath, "w")
         fs.write(file, json.stringify(data:read()))
         fs.close(file)
         data.saved = true
+        table.insert(savedKeys, key)
+    end
 
-        ::continue::
+    for i, k in pairs(savedKeys) do
+        self.pendingSaving[k] = nil
     end
 end
 
 function storageManager:deleteData(key)
-    local successDirectory = os.execute("rm -r "..self.filePath.."/"..key)
-    local successFile = os.execute("rm -r "..self:getFullPath(key))
-    self.loadedData[key] = nil
+    --remove directory and file
+    fs.rmrf(self.filePath.."/"..key)
+    fs.rmrf(self:getFullPath(key))
+    self:removeTable(key)
 end
 
 local imagesFolder = "data/downloads/images/"

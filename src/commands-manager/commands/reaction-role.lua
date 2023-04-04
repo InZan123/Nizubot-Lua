@@ -151,6 +151,10 @@ command.permissions = {
         failMessage = "This command requires that I have the \"Read Messages\" permission. Please make sure I have it by enabling the \"View Channels\" permissions."
     },
     {
+        permission = dia.enums.permission.readMessageHistory,
+        failMessage = "This command requires that I have the \"Read Message History\" permission. Please make sure I have it."
+    },
+    {
         permission = dia.enums.permission.manageMessages,
         failMessage = "This command requires that I have the \"Manage Messages\" permission. Please make sure I have it."
     },
