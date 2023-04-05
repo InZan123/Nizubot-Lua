@@ -102,6 +102,12 @@ function subCommand.run(client, ia, cmd, args)
     local ffmpegFilter = "[0]"
 
     local font = (args.type == "what" and "Times New Roman") or "Impact"
+    if _G.os_name == "Windows_NT" then
+        if font == "Times New Roman" then
+            font = "times"
+        end
+        font = "'C//:/Windows/Fonts/"..font..".ttf'"
+    end
     local fontColor = (args.type == "what" and "white") or (args.type == "overlay" and "white:bordercolor=black:borderw="..(fontsize/20)) or "black"
 
     if args.type == "boxes" then
@@ -169,6 +175,8 @@ function subCommand.run(client, ia, cmd, args)
     ffmpegFilter = ffmpegFilter:sub(1, -2) --the last character is a , so we remove it
 
     print(ffmpegFilter)
+    print(imageFile)
+    print(captionFile)
 
     local handle, err = spawn("ffmpeg", {
         args={
