@@ -173,6 +173,7 @@ function storageManager:deleteData(key)
     self:removeTable(key)
 end
 
+local captionFolder = "data/generated/caption/"
 local imagesFolder = "data/downloads/images/"
 
 coroutine.wrap(function()
@@ -187,6 +188,15 @@ coroutine.wrap(function()
 
             if now - mTime > 60 then
                 fs.unlink(imagesFolder .. "/" .. file.name)
+            end
+        end
+
+        for file in fs.scandir(captionFolder) do
+
+            local mTime = fs.stat(captionFolder .. "/" .. file.name).mtime.sec
+
+            if now - mTime > 60 then
+                fs.unlink(captionFolder .. "/" .. file.name)
             end
         end
 
