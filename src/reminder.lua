@@ -290,11 +290,20 @@ function reminder:startLoop(client)
                         local missedReminders = math.floor((currentTime-e.requestTime) / waitTime)-1
 
                         if missedReminders > 0 then
-                            channel:send("Sorry <@!"..e.userId..">, I forgot to remind you "..missedReminders.." times! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
+                            channel:send{
+                                content="Sorry <@!"..e.userId..">, I forgot to remind you "..missedReminders.." times! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding,
+                                allowed_mentions = {parse={}, users = {e.userId}}
+                            }
                         elseif timeDifference > 60 then
-                            channel:send("Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
+                            channel:send{
+                                content="Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding,
+                                allowed_mentions = {parse={}, users = {e.userId}}
+                            }
                         else
-                            channel:send("<@!"..e.userId..">! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding)
+                            channel:send{
+                                content="<@!"..e.userId..">! <t:"..e.orginTime..":R> you told me to keep reminding you"..messageEnding,
+                                allowed_mentions = {parse={}, users = {e.userId}}
+                            }
                         end
 
                         e.requestTime = e.finishedTime + waitTime * missedReminders
@@ -304,14 +313,16 @@ function reminder:startLoop(client)
                     else
 
                         if timeDifference > 60 then
-                            channel:send("Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding)
+                            channel:send{
+                                content="Sorry <@!"..e.userId..">, I was supposed to remind you <t:"..e.finishedTime..":R>! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding,
+                                allowed_mentions = {parse={}, users = {e.userId}}
+                            }
                         else
-                            channel:send("<@!"..e.userId..">! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding)    
+                            channel:send{
+                                content="<@!"..e.userId..">! <t:"..e.requestTime..":R> you told me to remind you"..messageEnding,
+                                allowed_mentions = {parse={}, users = {e.userId}}
+                            }
                         end
-                    end
-                    
-                    
-                    if e.looping then
                     end
 
                     table.insert(removeIndexes, 1, i)

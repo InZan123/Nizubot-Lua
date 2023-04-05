@@ -41,9 +41,15 @@ function command.run(client, ia, cmd, args)
         end
 
         if args.loop then
-            ia:reply("Sure! I will now keep reminding you <t:"..os.time() + parsedDuration..":R>"..messageEnding)
+            ia:reply{
+                content = "Sure! I will now keep reminding you <t:"..os.time() + parsedDuration..":R>"..messageEnding,
+                allowed_mentions = {parse={}}
+            }
         else
-            ia:reply("Sure! I will now remind you <t:"..os.time() + parsedDuration..":R>"..messageEnding)
+            ia:reply{
+                content = "Sure! I will now remind you <t:"..os.time() + parsedDuration..":R>"..messageEnding,
+                allowed_mentions = {parse={}}
+            }
         end
     elseif args.remove then
         args = args.remove

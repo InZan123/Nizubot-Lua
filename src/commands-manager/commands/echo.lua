@@ -19,6 +19,7 @@ function echo.run(client, ia, cmd, args)
             args.embeds = {args.embeds}
         end
     end
+    args.allowed_mentions={parse={}}
     local success, err = ia:reply(args, false)
     if not success then
         ia:reply("Failed to send message.\n\nHere's the error:\n"..err, true)

@@ -8,7 +8,13 @@ function command.run(client, ia, cmd, args)
 
     local data = _G.storageManager:getData("storing")
 
-    ia:reply("Stored data: "..json.stringify(data:read()), false)
+    ia:reply(
+        {
+            content = "Stored data: "..json.stringify(data:read()),
+            allowed_mentions = {parse={}}
+        },
+        false
+    )
     
 end
 
