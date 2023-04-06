@@ -110,7 +110,11 @@ function SpinSpinner(ia)
     }
 
     local currentMsg = "߷ You are now spinning your spinner..."
-    ia:reply(currentMsg)
+    local success, err = ia:reply(currentMsg)
+    if not success then
+        print(err)
+        ia:reply("An error occured trying to send a message.\n\nHere's the error:\n" + err, true)
+    end
     local msg = ia:getReply()
     local startTime = os.time()
         
