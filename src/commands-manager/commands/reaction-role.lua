@@ -28,6 +28,8 @@ function command.run(client, ia, cmd, args)
             local code = funs.parseDiaError(err)
             if code == "10014" then --Unknown emoji
                 return ia:reply("Sorry, I am not familiar with this emoji.", true)
+            elseif code == "30010" then --Too many reactions
+                return ia:reply("Sorry, this message has reached the maximum number of reactions.", true)
             else
                 return ia:reply("Something happened while trying to react to message.\n\nHere's the error:\n"..err, true)
             end
