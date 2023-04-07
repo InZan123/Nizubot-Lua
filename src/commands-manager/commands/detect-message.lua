@@ -96,14 +96,14 @@ command.info = {
                     description = "What it will detect.",
                     type = dia.enums.appCommandOptionType.string,
                     required = true,
-                    max_length = 200
+                    max_length = 50
                 },
                 {
                     name = "response",
                     description = "What I will respond with after detecting it.",
                     type = dia.enums.appCommandOptionType.string,
                     required = true,
-                    max_length = 2000
+                    max_length = 500
                 },
                 {
                     name = "case-sensitive",
