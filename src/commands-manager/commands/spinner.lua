@@ -9,10 +9,18 @@ function command.run(client, ia, cmd, args)
     if command.spinning[ia.user.id] then
         return ia:reply("You are already spinning a spinner!", true)
     end
-    SpinSpinner(ia)
-end
 
-function SpinSpinner(ia)
+    local currentMsg = "߷ You are now spinning your spinner..."
+
+    local success, err = ia:reply(currentMsg)
+
+    if not success then
+        print(err)
+        return ia:reply("An error occured trying to send a message.\n\nHere's the error:\n".. err, true)
+    end
+
+    local msg = ia:getReply()
+    local startTime = os.time()
 
     local spinForce = math.random(0,120)
     local spinReduction = 1
@@ -108,15 +116,6 @@ function SpinSpinner(ia)
             }
         }
     }
-
-    local currentMsg = "߷ You are now spinning your spinner..."
-    local success, err = ia:reply(currentMsg)
-    if not success then
-        print(err)
-        return ia:reply("An error occured trying to send a message.\n\nHere's the error:\n".. err, true)
-    end
-    local msg = ia:getReply()
-    local startTime = os.time()
         
     timer.sleep(waitTime)
 
