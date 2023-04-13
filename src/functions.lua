@@ -57,13 +57,17 @@ function funs.parseDuration(durationString)
     local totalDuration = 0
     for w in durationString:gmatch("%S+") do
         local prefix = w:sub(-1)
-        local amount = w:sub(1, #w-1)
+        local amount = tonumber(w:sub(1, #w-1))
 
         print(prefix, amount)
 
         local multiply = durationPrefixes[prefix]
 
         if multiply == nil then
+            return nil
+        end
+
+        if amount == nil then
             return nil
         end
 
