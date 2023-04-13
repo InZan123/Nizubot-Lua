@@ -40,6 +40,11 @@ This bot also uses coro-spawn. Here's how you install that.
 lit install creationix/coro-spawn
 ```
 
+This bot also uses coro-fs. Here's how you install that.
+```
+lit install creationix/coro-fs
+```
+
 If when running the bot you incounter an issue with Discordia-Slash or with Discordia, try updating them by running the following commands:
 ```
 git -C ./deps/discordia-slash pull
