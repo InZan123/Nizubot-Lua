@@ -6,7 +6,26 @@ local funs = require("src/functions")
 
 local fs = require("coro-fs")
 
-storageManager.filePath = "./data"
+local filePath = "./data"
+
+local dataPathFd = fs.open("./dataDirectory", "r")
+if dataPathFd then
+    filePath = fs.read(dataPathFd)
+else
+    print("Creating dataDirectory")
+    dataPathFd = fs.open("./dataDirectory", "w")
+    fs.write(dataPathFd, filePath, 0)
+end
+
+fs.close(dataPathFd)
+
+if not fs.stat(filePath) then
+    local success = fs.mkdirp(filePath)
+    if not success then
+        error("Couldn't load dataDirectory")
+    end
+end
+storageManager.filePath = filePath
 
 function storageManager:getFullPath(key)
     return self.filePath..'/'..key..'.json'

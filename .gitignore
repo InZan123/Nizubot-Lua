@@ -8,6 +8,7 @@ token
 openExchangeRatesApiKey
 libreTranslateUrl
 /data
+dataDirectory
 
 # Compiled Lua sources
 luac.out
