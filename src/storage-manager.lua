@@ -27,6 +27,8 @@ if not fs.stat(filePath) then
 end
 storageManager.filePath = filePath
 
+_G.dataPath = filePath
+
 function storageManager:getFullPath(key)
     return self.filePath..'/'..key..'.json'
 end
@@ -192,8 +194,15 @@ function storageManager:deleteData(key)
     self:removeTable(key)
 end
 
-local captionFolder = "data/generated/caption/"
-local imagesFolder = "data/downloads/images/"
+local captionFolder = filePath.."/generated/caption/"
+local imagesFolder = filePath.."/downloads/images/"
+
+if not fs.stat(captionFolder) then
+    fs.mkdirp(captionFolder)
+end
+if not fs.stat(imagesFolder) then
+    fs.mkdirp(imagesFolder)
+end
 
 coroutine.wrap(function()
 	while true do

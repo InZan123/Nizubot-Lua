@@ -27,8 +27,8 @@ end
 
 function subCommand.run(client, ia, cmd, args)
 
-    local captionFolder = "data/generated/caption/"
-    local imagesFolder = "data/downloads/images/"
+    local captionFolder = _G.dataPath.."/generated/caption/"
+    local imagesFolder = _G.dataPath.."/downloads/images/"
 
     if not fs.existsSync(captionFolder) then
         funs.createDirRecursive(captionFolder)

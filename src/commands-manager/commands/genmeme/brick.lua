@@ -64,8 +64,8 @@ function subCommand.run(client, ia, cmd, args)
         generateBrick = true
     end
 
-    local brickFolder = "data/generated/brick/"
-    local userPfpsFolder = "data/downloads/pfps/"
+    local brickFolder = _G.dataPath.."/generated/brick/"
+    local userPfpsFolder = _G.dataPath.."/downloads/pfps/"
 
     local brickGifFile = brickFolder..userId..".gif"
     local userPfpFile = userPfpsFolder..userId..".png"

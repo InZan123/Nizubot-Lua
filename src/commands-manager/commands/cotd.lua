@@ -28,7 +28,7 @@ function command.run(client, ia, cmd, args)
         currentColor = _G.cotd.getCurrentColor()
     end
 
-    local colorsFolder = "data/generated/colors/"
+    local colorsFolder = _G.dataPath.."/generated/colors/"
 
     local imageName = currentColor.color..".png"
 
