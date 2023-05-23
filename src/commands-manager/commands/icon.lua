@@ -22,7 +22,7 @@ function command.run(client, ia, cmd, args)
         local embed = {
             title = args.user.name.."'s avatar",
             image = {
-                url = args.user.avatarURL.."?size=4096"
+                url = args.user.avatarURL.."?size=1024"
             }
         }
         ia:reply{embed=embed}
@@ -45,7 +45,7 @@ function command.run(client, ia, cmd, args)
         local embed = {
             title = emoji.name.."'s icon",
             image = {
-                url = emoji.url.."?size=4096"
+                url = emoji.url.."?size=1024"
             }
         }
 
@@ -56,7 +56,7 @@ function command.run(client, ia, cmd, args)
             embed = {
                 title = client.user.name.."'s avatar",
                 image = {
-                    url = client.user.avatarURL.."?size=4096"
+                    url = client.user.avatarURL.."??size=1024"
                 }
             }
         else
@@ -66,7 +66,7 @@ function command.run(client, ia, cmd, args)
             embed = {
                 title = ia.guild.name.."'s icon",
                 image = {
-                    url = ia.guild.iconURL.."?size=4096"
+                    url = ia.guild.iconURL.."?size=1024"
                 }
             }
         end
