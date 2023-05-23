@@ -20,9 +20,9 @@ end
 fs.close(dataPathFd)
 
 if not fs.stat(filePath) then
-    local success = fs.mkdirp(filePath)
+    local success = fs.mkdir(filePath)
     if not success then
-        error("Couldn't load dataDirectory")
+        error("Couldn't load dataDirectory. Make sure the directory is valid.")
     end
 end
 storageManager.filePath = filePath
