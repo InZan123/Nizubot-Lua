@@ -198,10 +198,16 @@ local captionFolder = filePath.."/generated/caption/"
 local imagesFolder = filePath.."/downloads/images/"
 
 if not fs.stat(captionFolder) then
-    fs.mkdirp(captionFolder)
+    local success = fs.mkdirp(captionFolder)
+    if not success then
+        error("Cannot write to "..filePath)
+    end
 end
 if not fs.stat(imagesFolder) then
-    fs.mkdirp(imagesFolder)
+    local success = fs.mkdirp(imagesFolder)
+    if not success then
+        error("Cannot write to "..filePath)
+    end
 end
 
 coroutine.wrap(function()
