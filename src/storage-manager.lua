@@ -10,7 +10,7 @@ local filePath = "./data"
 
 local dataPathFd = fs.open("./dataDirectory", "r")
 if dataPathFd then
-    filePath = fs.read(dataPathFd)
+    filePath = funs.trim(fs.read(dataPathFd))
 else
     print("Creating dataDirectory")
     dataPathFd = fs.open("./dataDirectory", "w")
