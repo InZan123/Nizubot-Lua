@@ -194,8 +194,8 @@ function storageManager:deleteData(key)
     self:removeTable(key)
 end
 
-local captionFolder = filePath.."/generated/caption/"
-local imagesFolder = filePath.."/downloads/images/"
+local captionFolder = filePath.."/generated/caption"
+local imagesFolder = filePath.."/downloads/images"
 
 if not fs.stat(captionFolder) then
     local success, err = fs.mkdirp(captionFolder)
