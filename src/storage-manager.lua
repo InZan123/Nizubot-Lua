@@ -198,15 +198,15 @@ local captionFolder = filePath.."/generated/caption/"
 local imagesFolder = filePath.."/downloads/images/"
 
 if not fs.stat(captionFolder) then
-    local success = fs.mkdirp(captionFolder)
+    local success, err = fs.mkdirp(captionFolder)
     if not success then
-        error("Cannot write to "..filePath)
+        error("Cannot write to "..filePath.."\n"..err)
     end
 end
 if not fs.stat(imagesFolder) then
-    local success = fs.mkdirp(imagesFolder)
+    local success, err = fs.mkdirp(imagesFolder)
     if not success then
-        error("Cannot write to "..filePath)
+        error("Cannot write to "..filePath.."\n"..err)
     end
 end
 
