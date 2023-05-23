@@ -1,5 +1,7 @@
 local dia = require('discordia')
 local os = require("os")
+local fs = require("coro-fs")
+local spawn = require("coro-spawn")
 
 local command = {}
 
@@ -26,11 +28,36 @@ function command.run(client, ia, cmd, args)
         currentColor = _G.cotd.getCurrentColor()
     end
 
+    local colorsFolder = "data/generated/colors/"
+
+    local imageName = currentColor.color..".png"
+
+    local colorImage = colorsFolder..imageName
+
+    if not fs.stat(colorsFolder) then
+        fs.mkdirp(colorsFolder)
+    end
+
+    if not fs.stat(colorImage) then
+        print("Generating color "..currentColor.color)
+        local handle = spawn("ffmpeg", {
+            args={
+                "-f", "lavfi",
+                "-i", "color=size=255x255:duration=10:color="..currentColor.color,
+                colorImage,
+                "-y"
+            }
+        })
+        if handle then
+            handle:waitExit()
+        end
+    end
+
     local embed = {
         title = title,
         description = "**"..currentColor.name.."** (#"..currentColor.color:upper()..")",
         image = {
-            url = "https://singlecolorimage.com/get/"..currentColor.color.."/255x255"
+            url = "attachment://"..imageName
         },
         footer = {
             text = "Day "..workingDay.." | Next color"
@@ -38,7 +65,7 @@ function command.run(client, ia, cmd, args)
         timestamp = os.date("!%Y-%m-%dT%TZ", currentDay*86400+86400)
     }
 
-    ia:reply{embed=embed}
+    ia:reply{embed=embed, file=colorImage}
 
 end
 
