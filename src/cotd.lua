@@ -95,7 +95,7 @@ function cotd:startLoop(client)
     coroutine.wrap(function()
         while true do
             timer.sleep(1000)
-            local data = _G.storageManager:getData("cotdRolesDay", {})
+            local data = _G.storageManager:getData("cotdRolesDay", -1)
             local rolesDay = data:read()
             local currentDay = cotd.getCurrentDay()
             if rolesDay == currentDay then
