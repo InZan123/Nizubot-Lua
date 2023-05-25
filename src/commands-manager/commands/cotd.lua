@@ -9,21 +9,27 @@ function command.run(client, ia, cmd, args)
 
     args = args or {}
 
+    ia:replyDeferred()
+
     local currentDay = _G.cotd.getCurrentDay()
 
     local workingDay = currentDay
     
     local title = "Color of the day"
+    local dateDescription = "Next color"
+    local dateOffset = 86400
 
     local currentColor
 
     if args.day then
-        currentColor = _G.cotd.getDayColor(args.day)
+        currentColor, err = _G.cotd.getDayColor(args.day)
         if currentColor == nil then
-            return ia:reply("We have not reached that day yet.", true)
+            return ia:reply(err, true)
         end
         workingDay = args.day
         title = "Color of day "..workingDay
+        dateDescription = "COTD during"
+        dateOffset = 0
     else
         currentColor = _G.cotd.getCurrentColor()
     end
@@ -60,9 +66,9 @@ function command.run(client, ia, cmd, args)
             url = "attachment://"..imageName
         },
         footer = {
-            text = "Day "..workingDay.." | Next color"
+            text = "Day "..workingDay.." | "..dateDescription
         },
-        timestamp = os.date("!%Y-%m-%dT%TZ", currentDay*86400+86400)
+        timestamp = os.date("!%Y-%m-%dT%TZ", workingDay*86400+dateOffset)
     }
 
     ia:reply{embed=embed, file=colorImage}
@@ -77,7 +83,8 @@ command.info = {
         {
             name = "day",
             description = "The day you wanna get the color of.",
-            type = dia.enums.appCommandOptionType.integer
+            type = dia.enums.appCommandOptionType.integer,
+            min_value = 0
         }
     }
 }

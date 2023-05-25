@@ -2,33 +2,66 @@ local fs = require('fs')
 local json = require("json")
 local timer = require('timer')
 local dia = require("discordia")
+local http = require('coro-http')
 
 local cotd = {}
 
-local fd = fs.openSync("colors.json", "r")
-local colors = json.parse(fs.readSync(fd, 524288))
-fs.closeSync(fd)
+local apiLink = "https://api.color.pizza/v1/"
 
 function cotd.getCurrentColor()
-    local data = _G.storageManager:getData("cotd", {})
-    local dataRead = data:read()
-
     local currentDay = cotd.getCurrentDay()
-    if dataRead.day ~= currentDay then
-        return cotd.getDayColor(currentDay)
-    end
-
-    return dataRead.color or cotd.getDayColor(currentDay)
+    return cotd.getDayColor(currentDay)
 end
 
 function cotd.getDayColor(day)
     if day > cotd.getCurrentDay() then
+        return nil, "We have not reached that day yet."
+    end
+    
+    local data = _G.storageManager:getData("cotds", {})
+    local dataRead = data:read()
+
+    local color = dataRead[tostring(day)]
+    print(color)
+    if color then
+        return color
+    end
+
+    color = cotd.generateDayColor(day)
+    if color == nil then
+        return nil, "Sorry. Problems occured trying to generate the color."
+    end
+    dataRead[tostring(day)] = color
+    data:write(dataRead)
+    
+    return color
+end
+
+function cotd.generateDayColor(day)
+    math.randomseed(day)
+    local r = string.format("%x", math.random(0,255))
+    r = #r == 2 and r or "0"..r
+    local g = string.format("%x", math.random(0,255))
+    g = #g == 2 and g or "0"..g
+    local b = string.format("%x", math.random(0,255))
+    b = #b == 2 and b or "0"..b
+    local hexColor = r..g..b
+    math.randomseed(os.time())
+
+    local res, body = http.request("GET", apiLink.."?values="..hexColor)
+
+    if res.code ~= 200 then
         return nil
     end
-    math.randomseed(day)
-    local color = math.random(1,#colors)
-    math.randomseed(os.time())
-    return colors[color]
+
+    local parsedBody = json.parse(body)
+
+    local color = {
+        color = parsedBody.colors[1].hex:sub(2),
+        name = parsedBody.colors[1].name
+    }
+
+    return color
 end
 
 function cotd.getCurrentDay()
@@ -62,17 +95,12 @@ function cotd:startLoop(client)
     coroutine.wrap(function()
         while true do
             timer.sleep(1000)
-            local data = _G.storageManager:getData("cotd", {})
-            local dataRead = data:read()
+            local data = _G.storageManager:getData("cotdRolesDay", {})
+            local rolesDay = data:read()
             local currentDay = cotd.getCurrentDay()
-            if dataRead.day == currentDay then
+            if rolesDay == currentDay then
                 goto continue
             end
-            local currentColor = cotd.getDayColor(currentDay)
-
-            dataRead.day = currentDay
-            dataRead.color = currentColor
-            data:write(dataRead)
 
             local cotdRolesData = _G.storageManager:getData("cotdRoles", {})
             local cotdRolesRead = cotdRolesData:read()
@@ -106,6 +134,9 @@ function cotd:startLoop(client)
             if update then
                 cotdRolesData:write(cotdRolesRead)
             end
+
+            data:write(currentDay)
+
             ::continue::
         end
     end)()
