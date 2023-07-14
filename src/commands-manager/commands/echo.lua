@@ -73,7 +73,9 @@ function adminecho.run(client, ia, cmd, args)
         end
         
         local new_args = fix_args(ia, args)
-
+        if not new_args then
+            return
+        end
         local success, err = message:update(new_args)
         if success then
             ia:reply("I've edited the message.", true)
