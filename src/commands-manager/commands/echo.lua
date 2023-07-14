@@ -26,6 +26,9 @@ function echo.run(client, ia, cmd, args)
     end
     args.allowed_mentions={parse={}}
     local new_args = fix_args(ia, args)
+    if not new_args then
+        return
+    end
     local success, err = ia:reply(new_args)
     if not success then
         ia:reply("Failed to send message.\n\nHere's the error:\n"..err, true)
@@ -43,6 +46,9 @@ function adminecho.run(client, ia, cmd, args)
         end
 
         local new_args = fix_args(ia, args)
+        if not new_args then
+            return
+        end
         local success, err = ia.channel:send(new_args)
 
         if success then
