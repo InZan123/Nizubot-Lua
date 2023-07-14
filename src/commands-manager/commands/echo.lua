@@ -5,22 +5,28 @@ local commands = {}
 local echo = {}
 local adminecho = {}
 
-function echo.run(client, ia, cmd, args)
-    if args == nil then
-        ia:reply("**\n**", false)
-        return
-    end
+local function fix_args(ia, args)
     if args.embeds ~= nil then
         args.embeds = json.parse(args.embeds)
         if type(args.embeds) ~= "table" then
-            return ia:reply("Please send accurate JSON embed data.", true)
+            ia:reply("Please send accurate JSON embed data.", true)
+            return false
         end
         if not args.embeds[1] then
             args.embeds = {args.embeds}
         end
     end
+    return args
+end
+
+function echo.run(client, ia, cmd, args)
+    if args == nil then
+        ia:reply("**\n**")
+        return
+    end
     args.allowed_mentions={parse={}}
-    local success, err = ia:reply(args, false)
+    local new_args = fix_args(ia, args)
+    local success, err = ia:reply(new_args)
     if not success then
         ia:reply("Failed to send message.\n\nHere's the error:\n"..err, true)
     end
@@ -35,16 +41,10 @@ function adminecho.run(client, ia, cmd, args)
             ia:reply("I've sent the empty message.", true)
             return
         end
-        if args.embeds ~= nil then
-            args.embeds = json.parse(args.embeds)
-            if type(args.embeds) ~= "table" then
-                return ia:reply("Please send accurate JSON embed data.", true)
-            end
-            if not args.embeds[1] then
-                args.embeds = {args.embeds}
-            end
-        end
-        local success, err = ia.channel:send(args)
+
+        local new_args = fix_args(ia, args)
+        local success, err = ia.channel:send(new_args)
+
         if success then
             ia:reply("I've sent the message.", true)
         else
@@ -65,16 +65,10 @@ function adminecho.run(client, ia, cmd, args)
             ia:reply("I've edited the message.", true)
             return
         end
-        if args.embeds ~= nil then
-            args.embeds = json.parse(args.embeds)
-            if type(args.embeds) ~= "table" then
-                return ia:reply("Please send accurate JSON embed data.", true)
-            end
-            if not args.embeds[1] then
-                args.embeds = {args.embeds}
-            end
-        end
-        local success, err = message:update(args)
+        
+        local new_args = fix_args(ia, args)
+
+        local success, err = message:update(new_args)
         if success then
             ia:reply("I've edited the message.", true)
         else
