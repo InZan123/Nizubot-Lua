@@ -14,7 +14,7 @@ function command.run(client, ia, cmd, args)
     local dms = ia.channel.type == dia.enums.channelType.private
     if args.add then
         args = args.add
-        local success, err = _G.detector:addMessageDetect(args.type, args.key, args.response, args.caseSensitive, (dms and ia.user.id) or ia.guild.id, dms)
+        local success, err = _G.detector:addMessageDetect(args.type, args.key, args.response, args["case-sensitive"], (dms and ia.user.id) or ia.guild.id, dms)
         if success then
             ia:reply("Sure! I will now detect messages that "..detectTypes[args.type]..' "'..args.key..'".', true)
         else
@@ -42,7 +42,7 @@ function command.run(client, ia, cmd, args)
         for i, v in ipairs(detectors) do
             local ending = ""
             if v.caseSensitive then
-                ending = " (caseSensitive)"
+                ending = " (case-sensitive)"
             end
             table.insert(embed.fields, {
                 name = i..": "..v.key..ending,
