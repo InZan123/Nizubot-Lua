@@ -137,7 +137,7 @@ command.info = {
                 {
                     name = "index",
                     description = "Which reminder to remove. (See reminders with /remind list)",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     required = true
                 }
             }

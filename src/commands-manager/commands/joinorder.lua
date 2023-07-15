@@ -200,7 +200,7 @@ command.info = {
         {
             name = "index",
             description = "Which index you wanna check.",
-            type = dia.enums.appCommandOptionType.number,
+            type = dia.enums.appCommandOptionType.integer,
         }
     }
 }
