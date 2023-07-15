@@ -138,7 +138,7 @@ command.info = {
                 {
                     name = "hour",
                     description = "Hour of the time you will go to sleep.",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     required = true,
                     min_value = 0,
                     max_value = 24
@@ -146,7 +146,7 @@ command.info = {
                 {
                     name = "minute",
                     description = "Minute of the time you- will go to sleep.",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     required = true,
                     min_value = 0,
                     max_value = 60
@@ -154,7 +154,7 @@ command.info = {
                 {
                     name = "format",
                     description = "What format the time is in.",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     choices = {
                         {
                             name = "AM",
@@ -181,7 +181,7 @@ command.info = {
                 {
                     name = "hour",
                     description = "Hour of the time you wanna wake up.",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     required = true,
                     min_value = 0,
                     max_value = 24
@@ -189,7 +189,7 @@ command.info = {
                 {
                     name = "minute",
                     description = "Minute of the time you wanna wake up.",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     required = true,
                     min_value = 0,
                     max_value = 60
@@ -197,7 +197,7 @@ command.info = {
                 {
                     name = "format",
                     description = "What format the time is in.",
-                    type = dia.enums.appCommandOptionType.number,
+                    type = dia.enums.appCommandOptionType.integer,
                     choices = {
                         {
                             name = "AM",
