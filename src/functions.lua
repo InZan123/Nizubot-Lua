@@ -73,7 +73,7 @@ function funs.parseDuration(durationString)
 
         totalDuration = totalDuration + amount*multiply
     end
-    return totalDuration
+    return funs.round(totalDuration)
 end
 
 function funs.createDirRecursive(dir)
