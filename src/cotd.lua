@@ -81,6 +81,13 @@ function cotd.updateRole(role, name)
 end
 
 function cotd:startLoop(client)
+
+    if self.hasStarted then
+        return
+    end
+
+    self.hasStarted = true
+
     client:on("roleDelete", function (role)
         local cotdRolesData = _G.storageManager:getData("cotdRoles", {})
         local cotdRolesRead = cotdRolesData:read()

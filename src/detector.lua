@@ -106,6 +106,13 @@ function detector:getMessageDetects(guildId, dms)
 end
 
 function detector:start(client)
+
+    if self.hasStarted then
+        return
+    end
+
+    self.hasStarted = true
+
     client:on("messageCreate", function(message)
 
         if message.author.bot then return end

@@ -24,6 +24,9 @@ client:on('ready', function()
     _G.reminder:startLoop(client)
     _G.cotd:startLoop(client)
     _G.detector:start(client)
+    if _G.reminder.hasStarted and _G.cotd.hasStarted and _G.detector.hasStarted then
+        print("Successfully started loops!")
+    end
     CommandsManager:setupCommands(client)
 end)
 

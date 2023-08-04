@@ -181,6 +181,11 @@ end
 
 function reminder:startLoop(client)
 
+    if self.hasStarted then
+        return
+    end
+
+    self.hasStarted = true
     self.waitTime = 0
 
     coroutine.wrap(function()
